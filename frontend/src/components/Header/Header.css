@@ -128,3 +128,28 @@
 body.modal-open {
   overflow: hidden;
 }
+
+
+.nav-icons {
+  position: relative;
+}
+
+.auth-indicator {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00cc00;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #141414;
+}
+
+.user-avatar {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
