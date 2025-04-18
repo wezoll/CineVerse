@@ -16,7 +16,7 @@ const Knight = () => {
 
   useFrame(() => {
     if (knightRef.current) {
-      knightRef.current.rotation.y += 0.01;
+      knightRef.current.rotation.y += 0.006;
     }
   });
 
