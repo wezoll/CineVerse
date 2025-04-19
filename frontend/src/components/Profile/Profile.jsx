@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./Profile.css";
-import "./PasswordModal/PasswordModal.css"; // Импортируем стили для модального окна
-import PasswordModal from "./PasswordModal/PasswordModal"; // Импортируем компонент модального окна
+import "./PasswordModal/PasswordModal.css";
+import PasswordModal from "./PasswordModal/PasswordModal";
 import avatar from "../../assets/Header/avatar.png";
-import Header from "../Header/Header"; // Импортируем компонент Header
+import Header from "../Header/Header"; 
 
 const API_URL = "http://localhost:5000";
 
@@ -26,10 +26,8 @@ const Profile = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  // Состояние для отображения модального окна
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
-  // Загрузка данных пользователя
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -44,7 +42,6 @@ const Profile = () => {
         if (!response.ok) {
           if (response.status === 401) {
             console.log("Пользователь не авторизован, перенаправление...");
-            // Перенаправление на главную, если пользователь не авторизован
             window.location.href = "/";
             return;
           }
@@ -69,7 +66,6 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
-  // Загрузка избранных фильмов/сериалов
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -139,10 +135,8 @@ const Profile = () => {
 
   const handlePasswordSuccess = () => {
     setShowPasswordModal(false);
-    // Опционально: показать сообщение об успехе в основном компоненте
     setMessage("Пароль успешно изменен");
     
-    // Скрыть сообщение через некоторое время
     setTimeout(() => {
       setMessage("");
     }, 2000);
@@ -155,7 +149,6 @@ const Profile = () => {
       });
 
       if (response.ok) {
-        // Перенаправление на главную страницу после выхода
         window.location.href = "/";
       }
     } catch (err) {
@@ -356,7 +349,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Модальное окно для смены пароля */}
         {showPasswordModal && (
           <div className="modal-overlay">
             <PasswordModal
