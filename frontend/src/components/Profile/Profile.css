@@ -1,0 +1,407 @@
+.profile-page {
+  /* min-height: 100vh; */
+  padding: 50px 20px 40px;
+  background-color: #000;
+  color: #fff;
+}
+
+.profile-container {
+  max-width: 1250px;
+  margin: 0 auto;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Заголовок профиля */
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 30px;
+  background-color: #0d0d0d;
+  border-bottom: 1px solid #333;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20px;
+  border: 3px solid #0066ff;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  flex: 1;
+}
+
+.profile-name h1 {
+  margin: 0;
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.profile-name p {
+  margin: 0;
+  color: #aaa;
+  font-size: 16px;
+}
+
+.profile-actions {
+  margin-left: 20px;
+}
+
+.logout-button {
+  background-color: transparent;
+  border: 1px solid #ff3d3d;
+  color: #ff3d3d;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #ff3d3d;
+  color: #fff;
+}
+
+/* Табы */
+.profile-tabs {
+  display: flex;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.tab-button {
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  color: #aaa;
+  padding: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.tab-button:hover {
+  color: #fff;
+  background-color: rgba(0, 102, 255, 0.1);
+}
+
+.tab-button.active {
+  color: #fff;
+  border-bottom: 3px solid #0066ff;
+}
+
+/* Основной контент */
+.profile-content {
+  padding: 30px;
+}
+
+.profile-info h2,
+.profile-favorites h2,
+.profile-settings h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Информация пользователя */
+.info-row {
+  display: flex;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.info-label {
+  width: 150px;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.info-value {
+  flex: 1;
+  color: #fff;
+}
+
+.edit-profile-button {
+  background-color: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  transition: all 0.2s ease;
+}
+
+.edit-profile-button:hover {
+  background-color: #0052cc;
+}
+
+/* Избранное */
+.no-favorites {
+  text-align: center;
+  padding: 40px 0;
+  color: #aaa;
+}
+
+.browse-button {
+  background-color: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: all 0.2s ease;
+}
+
+.browse-button:hover {
+  background-color: #0052cc;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.favorite-item {
+  background-color: #141414;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.favorite-item:hover {
+  transform: translateY(-5px);
+}
+
+.favorite-poster {
+  position: relative;
+  height: 250px;
+}
+
+.favorite-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.favorite-type {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.favorite-info {
+  padding: 15px;
+}
+
+.favorite-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favorite-info p {
+  margin: 0 0 15px 0;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.favorite-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.favorite-detail-btn {
+  background-color: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  flex: 1;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.favorite-detail-btn:hover {
+  background-color: #0052cc;
+}
+
+.remove-favorite {
+  background-color: transparent;
+  border: none;
+  color: #ff3d3d;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-favorite:hover {
+  background-color: rgba(255, 61, 61, 0.1);
+}
+
+.heart-icon {
+  font-style: normal;
+  font-size: 18px;
+}
+
+/* Настройки профиля */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background-color: #141414;
+  color: #fff;
+  font-size: 16px;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 5px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0066ff;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.save-button {
+  background-color: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.save-button:hover {
+  background-color: #0052cc;
+}
+
+.cancel-button {
+  background-color: transparent;
+  border: 1px solid #aaa;
+  color: #aaa;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+.password-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.password-section h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.change-password-button {
+  background-color: #0066ff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.change-password-button:hover {
+  background-color: #0052cc;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 100px 10px 20px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .profile-actions {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+  
+  .favorites-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .favorite-poster {
+    height: 200px;
+  }
+}
