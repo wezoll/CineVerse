@@ -3,7 +3,7 @@ import "./Profile.css";
 import "./PasswordModal/PasswordModal.css";
 import PasswordModal from "./PasswordModal/PasswordModal";
 import avatar from "../../assets/Header/avatar.png";
-import Header from "../Header/Header"; 
+import Header from "../Header/Header";
 
 const API_URL = "http://localhost:5000";
 
@@ -136,7 +136,7 @@ const Profile = () => {
   const handlePasswordSuccess = () => {
     setShowPasswordModal(false);
     setMessage("Пароль успешно изменен");
-    
+
     setTimeout(() => {
       setMessage("");
     }, 2000);
@@ -157,7 +157,12 @@ const Profile = () => {
   };
 
   if (isLoading) {
-    return <div className="profile-loading">Загрузка профиля...</div>;
+    return (
+      <div className="profile-loading">
+        <div className="loading-spinner"></div>
+        <div className="loading-text">Загрузка профиля...</div>
+      </div>
+    );
   }
 
   return (
@@ -198,7 +203,9 @@ const Profile = () => {
               Избранное
             </button>
             <button
-              className={`tab-button ${activeTab === "settings" ? "active" : ""}`}
+              className={`tab-button ${
+                activeTab === "settings" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("settings")}
             >
               Настройки
@@ -282,7 +289,9 @@ const Profile = () => {
                 {(message || error) && (
                   <div className="notification-container">
                     {error && <div className="error-message">{error}</div>}
-                    {message && <div className="success-message">{message}</div>}
+                    {message && (
+                      <div className="success-message">{message}</div>
+                    )}
                   </div>
                 )}
                 <form onSubmit={handleSaveProfile}>
