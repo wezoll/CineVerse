@@ -4,6 +4,7 @@ import "./PasswordModal/PasswordModal.css";
 import PasswordModal from "./PasswordModal/PasswordModal";
 import avatar from "../../assets/Header/avatar.png";
 import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
 const API_URL = "http://localhost:5000";
 
@@ -367,6 +368,7 @@ const Profile = () => {
           </div>
         )}
       </div>
+      <Footer />
     </>
   );
 };

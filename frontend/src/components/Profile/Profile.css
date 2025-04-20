@@ -1,6 +1,6 @@
 .profile-page {
   /* min-height: 100vh; */
-  padding: 50px 20px 40px;
+  padding: 50px 20px 110px;
   background-color: #000;
   color: #fff;
 }
@@ -381,26 +381,26 @@
   .profile-page {
     padding: 100px 10px 20px;
   }
-  
+
   .profile-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .profile-avatar {
     margin-right: 0;
     margin-bottom: 15px;
   }
-  
+
   .profile-actions {
     margin-left: 0;
     margin-top: 15px;
   }
-  
+
   .favorites-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
-  
+
   .favorite-poster {
     height: 200px;
   }
@@ -434,12 +434,22 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
