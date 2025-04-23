@@ -8,22 +8,26 @@ import PopularFilms from "./components/PopularFilms/PopularFilms";
 import Top10 from "./components/Top10/Top10";
 import MovieCategory from "./components/MovieCategory/MovieCategory";
 import PopularSeries from "./components/PopularSeries/PopularSeries";
-import FAQ from "./components/FAQ/FAQ";
 import FeedbackForm from "./components/FeedbackForm/FeedbackForm";
 import ScrollToTopButton from "./components/ScrollToTopButton/ScrollToTopButton";
 import Footer from "./components/Footer/Footer";
-import Profile from "./components/Profile/Profile";
+import Profile from "./pages/Profile/Profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import FAQPage from "./pages/FAQ/FAQ";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/faq" element={<FAQPage />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>
@@ -52,9 +56,6 @@ function HomePage() {
       </div>
       <div id="PopularSeries">
         <PopularSeries />
-      </div>
-      <div id="FAQ">
-        <FAQ />
       </div>
       <div id="Feedback">
         <FeedbackForm />

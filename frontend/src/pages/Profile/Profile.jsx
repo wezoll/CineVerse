@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Profile.css";
 import "./PasswordModal/PasswordModal.css";
 import PasswordModal from "./PasswordModal/PasswordModal";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 
 const API_URL = "http://localhost:5000";
 

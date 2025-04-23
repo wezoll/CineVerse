@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
 import logo from "../../assets/Header/logo.svg";
 import searchIcon from "../../assets/Header/search-icon.svg";
@@ -9,6 +10,7 @@ import Search from "./Search/Search";
 const API_URL = "http://localhost:5000";
 
 const Header = () => {
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -105,6 +107,12 @@ const Header = () => {
   }, [isModalOpen, isSearchOpen]);
 
   const scrollToSection = (sectionId) => {
+    // If not on homepage, navigate to homepage first
+    if (location.pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
+
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
@@ -167,8 +175,13 @@ const Header = () => {
               >
                 Популярные сериалы
               </li>
-              <li className="nav-el" onClick={() => scrollToSection("FAQ")}>
-                FAQ
+              <li className="nav-el">
+                <Link
+                  to="/faq"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  FAQ
+                </Link>
               </li>
             </ul>
             <div className="nav-icons">
