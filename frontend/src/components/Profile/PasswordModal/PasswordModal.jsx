@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "./PasswordModal.css"; // Переиспользуем стили от AuthModal
+import React, { useState, useEffect } from "react";
+import "./PasswordModal.css";
 
 const API_URL = "http://localhost:5000";
 
@@ -7,14 +7,25 @@ const PasswordModal = ({ onClose, onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [modalMessage, setModalMessage] = useState(""); // Переименовано для изоляции
-  const [modalError, setModalError] = useState(""); // Переименовано для изоляции
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalError, setModalError] = useState("");
 
   const [passwordData, setPasswordData] = useState({
     current_password: "",
     new_password: "",
     confirm_password: "",
   });
+
+  // Эффект для блокировки прокрутки при открытии модального окна
+  useEffect(() => {
+    // Блокируем прокрутку
+    document.body.style.overflow = "hidden";
+
+    // Возвращаем прокрутку при закрытии модального окна
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const handlePasswordChange = (e) => {
     setPasswordData({
@@ -43,7 +54,7 @@ const PasswordModal = ({ onClose, onSuccess }) => {
         body: JSON.stringify({
           current_password: passwordData.current_password,
           new_password: passwordData.new_password,
-          confirm_password: passwordData.confirm_password
+          confirm_password: passwordData.confirm_password,
         }),
         credentials: "include",
       });
@@ -145,7 +156,7 @@ const PasswordModal = ({ onClose, onSuccess }) => {
               </div>
             </div>
             <div className="form-buttons">
-              <button type="submit" className="submit-button">
+              <button type="submit" className="submit-button-1">
                 Сохранить пароль
               </button>
               <button
@@ -162,7 +173,9 @@ const PasswordModal = ({ onClose, onSuccess }) => {
           {(modalMessage || modalError) && (
             <div className="notification-container">
               {modalError && <div className="error-message">{modalError}</div>}
-              {modalMessage && <div className="success-message">{modalMessage}</div>}
+              {modalMessage && (
+                <div className="success-message">{modalMessage}</div>
+              )}
             </div>
           )}
         </div>

@@ -14,6 +14,7 @@ const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -22,8 +23,8 @@ const Header = () => {
           method: "GET",
           credentials: "include",
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         });
 
         if (response.ok) {
@@ -44,7 +45,7 @@ const Header = () => {
     };
 
     checkAuth();
-    
+
     const handleScroll = () => {
       const header = document.querySelector("header");
       if (header) {
@@ -58,13 +59,28 @@ const Header = () => {
 
     window.addEventListener("scroll", handleScroll);
 
+    // Закрытие меню пользователя при клике вне его
+    const handleClickOutside = (event) => {
+      if (
+        showUserMenu &&
+        !event.target.closest(".user-menu") &&
+        !event.target.closest(".auth-button")
+      ) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [showUserMenu]);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    setShowUserMenu(false);
   };
 
   const toggleSearch = () => {
@@ -76,6 +92,10 @@ const Header = () => {
     }
   };
 
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+  };
+
   useEffect(() => {
     if (isModalOpen || isSearchOpen) {
       document.body.classList.add("modal-open");
@@ -83,12 +103,6 @@ const Header = () => {
       document.body.classList.remove("modal-open");
     }
   }, [isModalOpen, isSearchOpen]);
-
-  const closeModal = (e) => {
-    if (e.target.classList.contains("modal-overlay")) {
-      setIsModalOpen(false);
-    }
-  };
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -103,6 +117,24 @@ const Header = () => {
     setIsModalOpen(false);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(false);
+        setUserData(null);
+        setShowUserMenu(false);
+        window.location.href = "/";
+      }
+    } catch (err) {
+      console.error("Ошибка при выходе:", err);
+    }
+  };
+
   return (
     <>
       <header className="nav-header">
@@ -113,7 +145,7 @@ const Header = () => {
                 src={logo}
                 alt=""
                 className="nav-logo"
-                onClick={() => window.location.href = "/"}
+                onClick={() => (window.location.href = "/")}
                 style={{ cursor: "pointer" }}
               />
             </div>
@@ -140,41 +172,100 @@ const Header = () => {
               </li>
             </ul>
             <div className="nav-icons">
-              <img
-                src={searchIcon}
-                alt=""
-                className="search-icon"
-                onClick={toggleSearch}
-                style={{ cursor: "pointer" }}
-              />
+              <button className="auth-button" onClick={toggleSearch}>
+                <img src={searchIcon} alt="" className="search-icon" />
+              </button>
               {isLoading ? (
                 <div className="loading-avatar"></div>
+              ) : isAuthenticated ? (
+                <>
+                  <button className="auth-button" onClick={toggleUserMenu}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="user-icon"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </button>
+                  {showUserMenu && (
+                    <div className="user-menu">
+                      <div className="user-menu-header">{userData?.email}</div>
+                      <ul className="user-menu-items">
+                        <li
+                          className="user-menu-item"
+                          onClick={() => (window.location.href = "/profile")}
+                        >
+                          Настройки аккаунта
+                        </li>
+                        <li
+                          className="user-menu-item logout"
+                          onClick={handleLogout}
+                        >
+                          Выйти
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="logout-icon"
+                          >
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                          </svg>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </>
               ) : (
-                <img
-                  src={isAuthenticated ? avatar : avatar} // В будущем можно использовать аватар пользователя
-                  alt=""
-                  className="user-avatar"
-                  onClick={
-                    isAuthenticated
-                      ? () => (window.location.href = "/profile")
-                      : toggleModal
-                  }
-                  style={{ cursor: "pointer" }}
-                />
+                <button className="auth-button" onClick={toggleModal}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="user-icon"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </button>
               )}
-              {isAuthenticated && <div className="auth-indicator"></div>}
             </div>
           </div>
         </nav>
       </header>
 
       {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={toggleModal}>
               ×
             </button>
-            <AuthModal onAuthSuccess={handleAuthSuccess} onClose={toggleModal} />
+            <AuthModal
+              onAuthSuccess={handleAuthSuccess}
+              onClose={toggleModal}
+            />
           </div>
         </div>
       )}

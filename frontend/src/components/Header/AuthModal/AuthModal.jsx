@@ -249,6 +249,9 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
   return (
     <div className="auth-page modal-auth-page">
       <div className="auth-container">
+        <button className="modal-close" onClick={onClose}>
+          ×
+        </button>
         {/* Форма входа */}
         {!showSignup && !showForgotPassword && !showPasswordReset && (
           <div className="auth-form login-form">
@@ -285,7 +288,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
                   </button>
                 </div>
               </div>
-
 
               <button type="submit" className="submit-button">
                 Войти

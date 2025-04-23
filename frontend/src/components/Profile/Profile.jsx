@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./Profile.css";
 import "./PasswordModal/PasswordModal.css";
 import PasswordModal from "./PasswordModal/PasswordModal";
-import avatar from "../../assets/Header/avatar.png";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
@@ -26,6 +25,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
@@ -102,6 +102,7 @@ const Profile = () => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setIsSaving(true);
 
     try {
       const response = await fetch(`${API_URL}/profile/update`, {
@@ -131,6 +132,8 @@ const Profile = () => {
       }, 1500);
     } catch (err) {
       setError("Ошибка соединения с сервером");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -142,6 +145,12 @@ const Profile = () => {
       setMessage("");
     }, 2000);
   };
+
+  const handleClosePasswordModal = () => {
+    setShowPasswordModal(false);
+    document.body.style.overflow = "auto";
+  };
+
   const handleLogout = async () => {
     try {
       const response = await fetch(`${API_URL}/auth/logout`, {
@@ -172,10 +181,7 @@ const Profile = () => {
       <div className="profile-page">
         <div className="profile-container">
           <div className="profile-header">
-            <div className="profile-avatar">
-              <img src={avatar} alt="Аватар пользователя" />
-            </div>
-            <div className="profile-name">
+            <div className="profile-info">
               <h1>
                 {user.first_name} {user.last_name}
               </h1>
@@ -332,8 +338,19 @@ const Profile = () => {
                     <small>Email нельзя изменить</small>
                   </div>
                   <div className="form-buttons">
-                    <button type="submit" className="save-button">
-                      Сохранить изменения
+                    <button
+                      type="submit"
+                      className="save-button"
+                      disabled={isSaving}
+                    >
+                      {isSaving ? (
+                        <>
+                          <span className="loading-spinner"></span>
+                          Сохранение...
+                        </>
+                      ) : (
+                        "Сохранить изменения"
+                      )}
                     </button>
                     <button
                       type="button"
@@ -362,7 +379,7 @@ const Profile = () => {
         {showPasswordModal && (
           <div className="modal-overlay">
             <PasswordModal
-              onClose={() => setShowPasswordModal(false)}
+              onClose={handleClosePasswordModal}
               onSuccess={handlePasswordSuccess}
             />
           </div>
