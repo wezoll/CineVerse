@@ -4,6 +4,7 @@ import "./PasswordModal/PasswordModal.css";
 import PasswordModal from "./PasswordModal/PasswordModal";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import Reviews from "../../components/Reviews/Reviews";
 
 const API_URL = "http://localhost:5000";
 
@@ -211,6 +212,14 @@ const Profile = () => {
             </button>
             <button
               className={`tab-button ${
+                activeTab === "reviews" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("reviews")}
+            >
+              Отзывы
+            </button>
+            <button
+              className={`tab-button ${
                 activeTab === "settings" ? "active" : ""
               }`}
               onClick={() => setActiveTab("settings")}
@@ -290,6 +299,13 @@ const Profile = () => {
               </div>
             )}
 
+            {activeTab === "reviews" && (
+              <div className="profile-reviews">
+                <h2>Ваши отзывы</h2>
+                <Reviews inProfile={true} />
+              </div>
+            )}
+
             {activeTab === "settings" && (
               <div className="profile-settings">
                 <h2>Настройки профиля</h2>
@@ -345,7 +361,7 @@ const Profile = () => {
                     >
                       {isSaving ? (
                         <>
-                          <span className="loading-spinner"></span>
+                          <span className="loading-spinner-1"></span>
                           Сохранение...
                         </>
                       ) : (

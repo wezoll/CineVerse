@@ -140,7 +140,8 @@
 
 .profile-info h2,
 .profile-favorites h2,
-.profile-settings h2 {
+.profile-settings h2,
+.profile-reviews h2 {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 22px;
@@ -306,6 +307,39 @@
   font-size: 18px;
 }
 
+/* Отзывы пользователя */
+.profile-reviews {
+  animation: fadeIn 0.3s ease;
+}
+
+.profile-reviews h2 {
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 40px 0;
+  color: #aaa;
+}
+
+.add-review-button {
+  background-color: #053ba3;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: all 0.2s ease;
+}
+
+.add-review-button:hover {
+  background-color: #042d7a;
+}
+
 /* Настройки профиля */
 .form-group {
   margin-bottom: 24px;
@@ -364,8 +398,18 @@
   background-color: #053ba3;
   color: #fff;
   border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-width: 180px;
   justify-content: center;
+  height: 48px;
 }
 
 .save-button:hover {
@@ -422,15 +466,16 @@
   font-size: 14px;
 }
 
-.loading-spinner {
+.loading-spinner-1 {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 0.8s linear infinite;
   margin-right: 8px;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -495,6 +540,10 @@
   .favorite-poster {
     height: 200px;
   }
+
+  .profile-reviews {
+    padding: 10px;
+  }
 }
 
 .profile-loading {
@@ -503,7 +552,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #1a1a1a;
+  background-color: #000000;
   color: #ffffff;
 }
 

@@ -1,0 +1,532 @@
+.cineverse-movie-details {
+  position: relative;
+  color: #fff;
+  min-height: 100vh;
+  background-color: #000;
+  padding-bottom: 40px;
+}
+
+.cineverse-movie-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 500px;
+  background-size: cover;
+  background-position: center top;
+  z-index: 0;
+}
+
+.cineverse-backdrop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    0deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.7) 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+.cineverse-container {
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.cineverse-movie-header {
+  display: flex;
+  padding-top: 50px;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.cineverse-movie-poster-wrapper {
+  flex: 0 0 300px;
+}
+
+.cineverse-movie-poster {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.cineverse-no-poster {
+  width: 100%;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #191919;
+  color: #777;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.cineverse-movie-info {
+  flex: 1;
+  padding-top: 100px;
+}
+
+.cineverse-movie-title {
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.cineverse-movie-year {
+  font-weight: 400;
+  color: #999;
+  margin-left: 15px;
+  font-size: 28px;
+}
+
+.cineverse-original-title {
+  font-size: 18px;
+  color: #999;
+  margin-top: 5px;
+}
+
+.cineverse-movie-tagline {
+  font-style: italic;
+  font-size: 18px;
+  margin: 15px 0;
+  color: #ccc;
+}
+
+.cineverse-movie-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.cineverse-movie-meta-item {
+  color: #ccc;
+  font-size: 16px;
+}
+
+.cineverse-movie-rating {
+  display: flex;
+  align-items: center;
+}
+
+.cineverse-rating-badge {
+  background-color: #0066ff;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.cineverse-movie-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.cineverse-genre-badge {
+  border: 1px solid #0066ff;
+}
+
+.cineverse-watch-trailer-btn {
+  background-color: #0066ff;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cineverse-watch-trailer-btn:hover {
+  background-color: #0055cc;
+}
+
+/* Вкладки */
+.cineverse-movie-tabs {
+  background-color: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.cineverse-tabs-header {
+  display: flex;
+  border-bottom: 1px solid #222;
+}
+
+.cineverse-tab {
+  background-color: transparent;
+  border: none;
+  color: #ccc;
+  padding: 15px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+}
+
+.cineverse-tab:hover {
+  background-color: rgba(0, 102, 255, 0.1);
+  color: #fff;
+}
+
+.cineverse-tab.active {
+  background-color: rgba(0, 102, 255, 0.2);
+  color: #0066ff;
+  font-weight: 600;
+}
+
+.cineverse-tabs-content {
+  padding: 30px;
+}
+
+/* О фильме */
+.cineverse-movie-description {
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.cineverse-movie-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.cineverse-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cineverse-detail-label {
+  color: #999;
+  font-size: 14px;
+}
+
+.cineverse-detail-value {
+  color: #fff;
+  font-size: 16px;
+}
+
+/* Трейлер */
+.cineverse-movie-trailer {
+  display: flex;
+  justify-content: center;
+}
+
+/* Кадры */
+.cineverse-frames-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 15px;
+}
+
+.cineverse-frame-item {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.cineverse-frame-item:hover {
+  transform: scale(1.02);
+}
+
+.cineverse-frame-item img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.cineverse-no-frames {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+}
+
+/* Актеры */
+.cineverse-cast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.cineverse-cast-card {
+  background-color: #191919;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.cineverse-cast-card:hover {
+  transform: translateY(-5px);
+}
+
+.cineverse-cast-photo {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
+
+.cineverse-no-photo {
+  width: 100%;
+  aspect-ratio: 2/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  color: #777;
+  font-size: 14px;
+}
+
+.cineverse-cast-info {
+  padding: 10px;
+}
+
+.cineverse-cast-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.cineverse-cast-character {
+  color: #999;
+  font-size: 14px;
+}
+
+.cineverse-no-cast {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+}
+
+/* Похожие фильмы */
+.cineverse-section {
+  margin-bottom: 40px;
+}
+
+.cineverse-section-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.cineverse-title-line {
+  width: 60px;
+  height: 3px;
+  background-color: #0066ff;
+  margin-top: 10px;
+}
+
+.cineverse-similar-movies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.cineverse-movie-card {
+  background-color: #191919;
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.cineverse-movie-card:hover {
+  transform: translateY(-5px);
+}
+
+.cineverse-movie-card-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
+
+.cineverse-movie-card-rating {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #0066ff;
+  color: white;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.cineverse-movie-card-info {
+  padding: 10px;
+}
+
+.cineverse-movie-card-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cineverse-movie-card-year {
+  color: #999;
+  font-size: 14px;
+}
+
+/* Кнопка назад */
+.cineverse-back-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.cineverse-back-btn {
+  display: inline-block;
+  background-color: #0066ff;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.cineverse-back-btn:hover {
+  background-color: #0055cc;
+}
+
+/* Загрузка и ошибки */
+.cineverse-loader,
+.cineverse-error,
+.cineverse-not-found {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 18px;
+  text-align: center;
+  padding: 0 20px;
+  gap: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0066ffb3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.cineverse-error {
+  color: #ff3333;
+}
+
+/* Медиа-запросы */
+@media (max-width: 900px) {
+  .cineverse-movie-header {
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 30px;
+  }
+
+  .cineverse-movie-poster-wrapper {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+
+  .cineverse-movie-info {
+    padding-top: 0;
+    text-align: center;
+  }
+
+  .cineverse-movie-meta {
+    justify-content: center;
+  }
+
+  .cineverse-movie-genres {
+    justify-content: center;
+  }
+
+  .cineverse-movie-description {
+    text-align: left;
+  }
+
+  .cineverse-tabs-header {
+    overflow-x: auto;
+  }
+
+  .cineverse-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .cineverse-movie-title {
+    font-size: 28px;
+  }
+
+  .cineverse-movie-year {
+    font-size: 20px;
+  }
+
+  .cineverse-tabs-content {
+    padding: 20px 15px;
+  }
+
+  .cineverse-movie-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cineverse-frames-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cineverse-cast-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  .cineverse-similar-movies {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+.cineverse-vote-count {
+  color: #ccc;
+  font-size: 14px;
+  margin-left: 10px;
+}

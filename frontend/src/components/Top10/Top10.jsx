@@ -1,31 +1,87 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Top10.css";
-import moviesData from "../../../db.json";
-import TrailerModal from "../TrailerModal/TrailerModal";
-import MovieModal from "../MovieModal/MovieModal";
+import { trendingService } from "../../services/trendingService";
 
 const Top10 = () => {
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [trendingItems, setTrendingItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [showTrailerModal, setShowTrailerModal] = useState(false);
-  const [showExternalModal, setShowExternalModal] = useState(false);
-  const [externalUrl, setExternalUrl] = useState("");
+  const [timeWindow, setTimeWindow] = useState("week");
+  const [isAnimating, setIsAnimating] = useState(false);
   const sliderRef = useRef(null);
 
-  const movies = moviesData.movies || moviesData;
+  const navigate = useNavigate();
 
-  const Top10 = Array.isArray(movies)
-    ? movies.filter((movie) => movie.category === "Top10").slice(0, 10)
-    : [];
+  const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+
+  useEffect(() => {
+    const fetchTrendingItems = async () => {
+      try {
+        setLoading(true);
+        setCanScrollLeft(false);
+        setCanScrollRight(true);
+
+        const data = await trendingService.getTop10("all", timeWindow);
+        setTrendingItems(data.results || []);
+      } catch (err) {
+        setError("Не удалось загрузить трендовые элементы");
+        console.error(err);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+          setIsAnimating(false);
+
+          setTimeout(checkScrollButtons, 200);
+        }, 300);
+      }
+    };
+
+    fetchTrendingItems();
+  }, [timeWindow]);
+
+  const handleItemClick = (item) => {
+    const mediaType = item.media_type;
+
+    if (mediaType === "movie") {
+      navigate(`/movie/${item.id}`);
+    } else if (mediaType === "tv") {
+      navigate(`/series/${item.id}`);
+    }
+  };
+
+  const switchTimeWindow = (newTimeWindow) => {
+    if (newTimeWindow !== timeWindow) {
+      setIsAnimating(true);
+      setTimeWindow(newTimeWindow);
+
+      if (sliderRef.current) {
+        sliderRef.current.scrollLeft = 0;
+      }
+    }
+  };
+
+  const checkScrollButtons = () => {
+    if (sliderRef.current) {
+      const slider = sliderRef.current;
+      const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+
+      setCanScrollLeft(slider.scrollLeft > 10);
+
+      setCanScrollRight(slider.scrollLeft < maxScrollLeft - 10);
+    }
+  };
 
   const scrollRight = () => {
     if (sliderRef.current) {
       const slider = sliderRef.current;
       const scrollAmount = slider.clientWidth;
       slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
+
+      setTimeout(checkScrollButtons, 300);
+      setTimeout(checkScrollButtons, 600);
     }
   };
 
@@ -34,105 +90,44 @@ const Top10 = () => {
       const slider = sliderRef.current;
       const scrollAmount = slider.clientWidth;
       slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    }
-  };
 
-  const checkScrollButtons = () => {
-    if (sliderRef.current) {
-      const slider = sliderRef.current;
-      const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
-      setCanScrollLeft(slider.scrollLeft > 0);
-      setCanScrollRight(slider.scrollLeft < maxScrollLeft);
+      setTimeout(checkScrollButtons, 300);
+      setTimeout(checkScrollButtons, 600);
     }
   };
 
   useEffect(() => {
     const slider = sliderRef.current;
-    if (slider) {
-      slider.addEventListener("scroll", checkScrollButtons);
+
+    const handleScrollAndResize = () => {
       checkScrollButtons();
+      setTimeout(checkScrollButtons, 100);
+    };
+
+    if (slider) {
+      slider.addEventListener("scroll", handleScrollAndResize);
+      window.addEventListener("resize", handleScrollAndResize);
+
+      handleScrollAndResize();
+
       return () => {
-        slider.removeEventListener("scroll", checkScrollButtons);
+        slider.removeEventListener("scroll", handleScrollAndResize);
+        window.removeEventListener("resize", handleScrollAndResize);
       };
     }
-  }, []);
-
-  const openMovieInfo = (movie) => {
-    setSelectedMovie(movie);
-    setShowModal(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    document.body.style.overflow = "auto";
-  };
-
-  const openExternalModal = (url) => {
-    console.log("openExternalModal вызвана с URL:", url);
-    setExternalUrl(url);
-    setShowExternalModal(true);
-  };
-
-  const closeExternalModal = () => {
-    console.log("closeExternalModal вызвана");
-    setShowExternalModal(false);
-  };
-
-  const handleExternalLink = (url) => {
-    console.log("handleExternalLink вызвана с URL:", url);
-    if (url) {
-      openExternalModal(url);
-    } else {
-      console.warn("URL не определен");
-    }
-  };
-
-  const confirmExternalRedirect = () => {
-    console.log("confirmExternalRedirect вызвана, URL:", externalUrl);
-    window.open(externalUrl, "_blank");
-    closeExternalModal();
-  };
-
-  const openTrailerModal = (url) => {
-    setShowTrailerModal(true);
-    setShowModal(false);
-  };
-
-  const closeTrailerModal = () => {
-    setShowTrailerModal(false);
-    setShowModal(true);
-  };
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
-
-  useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key === "Escape") {
-        if (showExternalModal) {
-          closeExternalModal();
-        } else if (showTrailerModal) {
-          closeTrailerModal();
-        } else if (showModal) {
-          closeModal();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleEscKey);
-    return () => {
-      window.removeEventListener("keydown", handleEscKey);
-    };
-  }, [showModal, showExternalModal, showTrailerModal]);
+  }, [trendingItems]);
 
   const renderNumber = (number) => {
     const numberStr = number.toString();
-    
+
     return (
       <div className="number-container">
-        <svg className="number" viewBox="0 0 100 120" width="100%" height="100%">
+        <svg
+          className="number"
+          viewBox="0 0 100 120"
+          width="100%"
+          height="100%"
+        >
           <text
             x="50%"
             y="50%"
@@ -147,14 +142,53 @@ const Top10 = () => {
     );
   };
 
-  if (Top10.length === 0) {
+  const LoadingSkeleton = () => {
+    return (
+      <div className="Top10-slider">
+        {[...Array(10)].map((_, index) => (
+          <div className="top10-item" key={`skeleton-${index}`}>
+            <div className="number-wrapper skeleton-number">
+              {renderNumber(index + 1)}
+            </div>
+            <div className="poster-wrapper skeleton-poster">
+              <div className="poster skeleton-animation">
+                <div className="poster-overlay"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  if (error) {
     return (
       <section className="Top10-section">
         <div className="Top10-container">
-          <h2 className="Top10-title">
-            <span className="Top10-title-text">В тренде</span>
-          </h2>
-          <div className="Top10-loading">Loading Top-10 movies...</div>
+          <div className="Top10-header">
+            <h2 className="Top10-title">
+              <span className="Top10-title-text">В тренде</span>
+            </h2>
+            <div className="time-window-toggle">
+              <button
+                className={`time-window-btn ${
+                  timeWindow === "day" ? "active" : ""
+                }`}
+                onClick={() => switchTimeWindow("day")}
+              >
+                Сегодня
+              </button>
+              <button
+                className={`time-window-btn ${
+                  timeWindow === "week" ? "active" : ""
+                }`}
+                onClick={() => switchTimeWindow("week")}
+              >
+                На этой неделе
+              </button>
+            </div>
+          </div>
+          <div className="Top10-error">{error}</div>
         </div>
       </section>
     );
@@ -163,13 +197,34 @@ const Top10 = () => {
   return (
     <section className="Top10-section">
       <div className="Top10-container">
-        <h2 className="Top10-title">
-          <span className="Top10-title-text">В тренде</span>
-          <span className="Top10-title-icon"></span>
-        </h2>
+        <div className="Top10-header">
+          <h2 className="Top10-title">
+            <span className="Top10-title-text">В тренде</span>
+          </h2>
+          <div className="time-window-toggle">
+            <button
+              className={`time-window-btn ${
+                timeWindow === "day" ? "active" : ""
+              }`}
+              onClick={() => switchTimeWindow("day")}
+              disabled={loading || timeWindow === "day"}
+            >
+              <span className="btn-text">Сегодня</span>
+            </button>
+            <button
+              className={`time-window-btn ${
+                timeWindow === "week" ? "active" : ""
+              }`}
+              onClick={() => switchTimeWindow("week")}
+              disabled={loading || timeWindow === "week"}
+            >
+              <span className="btn-text">На этой неделе</span>
+            </button>
+          </div>
+        </div>
 
         <div className="Top10-slider-container">
-          {canScrollLeft && (
+          {canScrollLeft && !loading && (
             <button className="prev-btn" onClick={scrollLeft}>
               <svg
                 width="24"
@@ -189,28 +244,40 @@ const Top10 = () => {
             </button>
           )}
 
-          <div className="Top10-slider" ref={sliderRef}>
-            {Top10.map((movie, index) => (
-              <div className="top10-item" key={movie.id}>
-                <div className="number-wrapper">
-                  {renderNumber(index + 1)}
-                </div>
-                <div
-                  className="poster-wrapper"
-                  onClick={() => openMovieInfo(movie)}
-                >
-                  <div 
-                    className="poster" 
-                    style={{ backgroundImage: `url(${movie.poster})` }}
+          {loading || isAnimating ? (
+            <LoadingSkeleton />
+          ) : trendingItems.length === 0 ? (
+            <div className="Top10-empty">Нет доступных трендовых элементов</div>
+          ) : (
+            <div
+              className="Top10-slider fade-in"
+              ref={sliderRef}
+              onScroll={checkScrollButtons}
+            >
+              {trendingItems.slice(0, 10).map((item, index) => (
+                <div className="top10-item" key={item.id}>
+                  <div className="number-wrapper">
+                    {renderNumber(index + 1)}
+                  </div>
+                  <div
+                    className="poster-wrapper"
+                    onClick={() => handleItemClick(item)}
                   >
-                    <div className="poster-overlay"></div>
+                    <div
+                      className="poster"
+                      style={{
+                        backgroundImage: `url(${imageBaseUrl}${item.poster_path})`,
+                      }}
+                    >
+                      <div className="poster-overlay"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
-          {canScrollRight && (
+          {canScrollRight && !loading && (
             <button className="next-btn" onClick={scrollRight}>
               <svg
                 width="24"
@@ -231,29 +298,6 @@ const Top10 = () => {
           )}
         </div>
       </div>
-      
-      <MovieModal 
-        selectedMovie={selectedMovie}
-        showModal={showModal}
-        closeModal={closeModal}
-        handleExternalLink={handleExternalLink}
-        openTrailerModal={openTrailerModal}
-        showExternalModal={showExternalModal}
-        closeExternalModal={closeExternalModal}
-        confirmExternalRedirect={confirmExternalRedirect}
-        externalUrl={externalUrl}
-        isFavorite={isFavorite}
-        toggleFavorite={toggleFavorite}
-      />
-
-      {showTrailerModal && selectedMovie && (
-        <TrailerModal 
-          isOpen={showTrailerModal}
-          onClose={closeTrailerModal}
-          trailerUrl={selectedMovie.trailerLink}
-          movieTitle={selectedMovie.title}
-        />
-      )}
     </section>
   );
 };

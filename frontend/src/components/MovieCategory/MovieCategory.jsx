@@ -1,26 +1,37 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./MovieCategory.css";
-import moviesData from "../../../db.json";
-import MovieModal from "../MovieModal/MovieModal";
-import TrailerModal from "../TrailerModal/TrailerModal";
+import { movieService } from "../../services/movieService";
 
 const MovieCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState("action");
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [favorites, setFavorites] = useState({});
-  const [showTrailerModal, setShowTrailerModal] = useState(false);
-  const [showExternalModal, setShowExternalModal] = useState(false);
-  const [externalUrl, setExternalUrl] = useState("");
   const sliderRef = useRef(null);
 
-  const movies = Array.isArray(moviesData.movies)
-    ? moviesData.movies
-    : Array.isArray(moviesData)
-    ? moviesData
-    : [];
+  // Карта соответствия для идентификаторов жанров TMDB
+  const genreIds = {
+    action: 28, // Боевик
+    comedy: 35, // Комедия
+    drama: 18, // Драма
+    fantasy: 14, // Фэнтези
+    horror: 27, // Ужасы
+    mystery: 9648, // Детектив
+    romance: 10749, // Мелодрама
+  };
+
+  const categoryMap = {
+    action: "Боевик",
+    comedy: "Комедия",
+    drama: "Драма",
+    fantasy: "Фэнтези",
+    horror: "Ужасы",
+    mystery: "Детектив",
+    romance: "Мелодрама",
+  };
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem("movieFavorites");
@@ -32,6 +43,34 @@ const MovieCategory = () => {
   useEffect(() => {
     localStorage.setItem("movieFavorites", JSON.stringify(favorites));
   }, [favorites]);
+
+  // Функция для загрузки фильмов по жанру
+  useEffect(() => {
+    const fetchMoviesByGenre = async () => {
+      try {
+        setLoading(true);
+        const genreId = genreIds[selectedCategory];
+
+        // Добавим конечную точку API для получения фильмов по жанру
+        const response = await fetch(
+          `/api/movies/discover?genre=${genreId}&page=1`
+        );
+        if (!response.ok) {
+          throw new Error("Не удалось получить фильмы");
+        }
+
+        const data = await response.json();
+        setMovies(data.results);
+        setLoading(false);
+      } catch (err) {
+        console.error("Ошибка при загрузке фильмов:", err);
+        setError("Произошла ошибка при загрузке фильмов");
+        setLoading(false);
+      }
+    };
+
+    fetchMoviesByGenre();
+  }, [selectedCategory]);
 
   const toggleFavorite = (movieId) => {
     setFavorites((prevFavorites) => {
@@ -47,16 +86,6 @@ const MovieCategory = () => {
 
   const isFavorite = (movieId) => {
     return !!favorites[movieId];
-  };
-
-  const categoryMap = {
-    action: "Боевик",
-    comedy: "Комедия",
-    drama: "Драма",
-    fantasy: "Фэнтези",
-    horror: "Ужасы",
-    mystery: "Детектив",
-    romance: "Мелодрама",
   };
 
   const getCategoryDescription = () => {
@@ -79,24 +108,6 @@ const MovieCategory = () => {
         return "";
     }
   };
-
-  const filteredMovies = movies.filter((movie) => {
-    const categoryRussian = categoryMap[selectedCategory];
-    return (
-      movie.genre &&
-      Array.isArray(movie.genre) &&
-      movie.genre.includes(categoryRussian)
-    );
-  });
-
-  const uniqueMovies = filteredMovies.reduce((acc, current) => {
-    const x = acc.find((item) => item.id === current.id);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, []);
 
   const scrollRight = () => {
     if (sliderRef.current) {
@@ -143,7 +154,7 @@ const MovieCategory = () => {
         slider.removeEventListener("scroll", checkScrollButtons);
       };
     }
-  }, [uniqueMovies]);
+  }, [movies]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -163,66 +174,6 @@ const MovieCategory = () => {
       setTimeout(checkScrollButtons, 100);
     }
   };
-
-  const openMovieInfo = (movie) => {
-    setSelectedMovie(movie);
-    setShowModal(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    document.body.style.overflow = "auto";
-  };
-
-  const openTrailerModal = (url) => {
-    setShowTrailerModal(true);
-    setShowModal(false);
-  };
-
-  const closeTrailerModal = () => {
-    setShowTrailerModal(false);
-    setShowModal(true);
-  };
-
-  const openExternalModal = (url) => {
-    setExternalUrl(url);
-    setShowExternalModal(true);
-  };
-
-  const closeExternalModal = () => {
-    setShowExternalModal(false);
-  };
-
-  const handleExternalLink = (url) => {
-    openExternalModal(url);
-  };
-
-  const confirmExternalRedirect = () => {
-    window.open(externalUrl, "_blank");
-    closeExternalModal();
-  };
-
-  useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key === "Escape") {
-        if (showExternalModal) {
-          closeExternalModal();
-        } else if (showTrailerModal) {
-          closeTrailerModal();
-        } else if (showModal) {
-          closeModal();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleEscKey);
-    return () => {
-      window.removeEventListener("keydown", handleEscKey);
-    };
-  }, [showModal, showTrailerModal, showExternalModal]);
-
-  const currentFavorite = selectedMovie ? isFavorite(selectedMovie.id) : false;
 
   return (
     <section className="category-section">
@@ -272,27 +223,46 @@ const MovieCategory = () => {
             )}
 
             <div className="category-slider" ref={sliderRef}>
-              {uniqueMovies.length > 0 ? (
-                uniqueMovies.map((movie) => (
+              {loading ? (
+                <div className="category-loading-skeleton">
+                  {[...Array(6)].map((_, index) => (
+                    <div key={index} className="category-loading-card"></div>
+                  ))}
+                </div>
+              ) : error ? (
+                <div className="error">{error}</div>
+              ) : movies.length > 0 ? (
+                movies.map((movie) => (
                   <div className="category-movie-card" key={movie.id}>
                     <div
                       className="category-movie-poster"
-                      style={{ backgroundImage: `url(${movie.poster})` }}
+                      style={{
+                        backgroundImage: movie.poster_path
+                          ? `url(https://image.tmdb.org/t/p/w500${movie.poster_path})`
+                          : "url(/images/no-poster.jpg)",
+                      }}
                     >
                       <div className="category-movie-overlay"></div>
                       <div className="category-movie-info">
                         <h3 className="category-movie-title">{movie.title}</h3>
-                        <p className="category-movie-year">{movie.year}</p>
+                        <p className="category-movie-year">
+                          {movie.release_date
+                            ? new Date(movie.release_date).getFullYear()
+                            : ""}
+                        </p>
                         <div className="featured-movie-buttons">
                           <button
                             className="more-info-btn"
-                            onClick={() => openMovieInfo(movie)}
+                            onClick={() => {
+                              window.location.href = `/movie/${movie.id}`;
+                            }}
                           >
                             Подробнее
                           </button>
                           <button
                             className="favorite-btn"
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
                               toggleFavorite(movie.id);
                             }}
@@ -314,9 +284,7 @@ const MovieCategory = () => {
                   </div>
                 ))
               ) : (
-                <div className="no-movies">
-                  Фильмы в данной категории не найдены
-                </div>
+                <div className="no-movies">Нет фильмов в этой категории</div>
               )}
             </div>
 
@@ -342,29 +310,6 @@ const MovieCategory = () => {
           </div>
         </div>
       </div>
-
-      <MovieModal 
-        selectedMovie={selectedMovie}
-        showModal={showModal}
-        closeModal={closeModal}
-        handleExternalLink={handleExternalLink}
-        openTrailerModal={openTrailerModal}
-        showExternalModal={showExternalModal}
-        closeExternalModal={closeExternalModal}
-        confirmExternalRedirect={confirmExternalRedirect}
-        externalUrl={externalUrl}
-        isFavorite={currentFavorite}
-        toggleFavorite={() => selectedMovie && toggleFavorite(selectedMovie.id)}
-      />
-
-      {showTrailerModal && selectedMovie && (
-        <TrailerModal 
-          isOpen={showTrailerModal}
-          onClose={closeTrailerModal}
-          trailerUrl={selectedMovie.trailerLink}
-          movieTitle={selectedMovie.title}
-        />
-      )}
     </section>
   );
 };

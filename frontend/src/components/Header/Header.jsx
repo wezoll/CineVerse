@@ -5,7 +5,7 @@ import logo from "../../assets/Header/logo.svg";
 import searchIcon from "../../assets/Header/search-icon.svg";
 import avatar from "../../assets/Header/avatar.png";
 import AuthModal from "./AuthModal/AuthModal";
-import Search from "./Search/Search";
+import SearchBar from "../SearchBar/SearchBar";
 
 const API_URL = "http://localhost:5000";
 
@@ -163,17 +163,21 @@ const Header = () => {
               <li className="nav-el" onClick={() => scrollToSection("home")}>
                 Главная
               </li>
-              <li
-                className="nav-el"
-                onClick={() => scrollToSection("TrendingMovies")}
-              >
-                Актуальные фильмы
+              <li className="nav-el">
+                <Link
+                  to="/popular-movies"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Популярные фильмы
+                </Link>
               </li>
-              <li
-                className="nav-el"
-                onClick={() => scrollToSection("PopularSeries")}
-              >
-                Популярные сериалы
+              <li className="nav-el">
+                <Link
+                  to="/popular-series"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Популярные сериалы
+                </Link>
               </li>
               <li className="nav-el">
                 <Link
@@ -185,9 +189,7 @@ const Header = () => {
               </li>
             </ul>
             <div className="nav-icons">
-              <button className="auth-button" onClick={toggleSearch}>
-                <img src={searchIcon} alt="" className="search-icon" />
-              </button>
+              <SearchBar />
               {isLoading ? (
                 <div className="loading-avatar"></div>
               ) : isAuthenticated ? (
@@ -282,8 +284,6 @@ const Header = () => {
           </div>
         </div>
       )}
-
-      <Search isOpen={isSearchOpen} onClose={toggleSearch} />
     </>
   );
 };

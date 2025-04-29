@@ -20,9 +20,8 @@
 .nav-els {
   display: flex;
   align-items: center;
-  font-size: 20px;
   gap: 40px;
-  font-size: 17px;
+  margin-right: 20px;
 }
 
 .nav-el {
@@ -47,15 +46,35 @@
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 30px;
 }
 
 .nav-icons {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-left: 120px;
+  gap: 80px;
   position: relative;
+}
+
+.nav-icons .search-bar {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  margin: 0;
+  width: 200px;
+}
+
+.auth-button {
+  height: 36px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  padding: 0;
 }
 
 .nav-icon {
@@ -204,20 +223,6 @@ body.modal-open {
   width: 14px;
   height: 14px;
   color: #ff3d3d;
-}
-
-.auth-button {
-  background-color: transparent;
-  color: #ffffff;
-  border: none;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.1s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Poppins", sans-serif;
 }
 
 .auth-button:hover {

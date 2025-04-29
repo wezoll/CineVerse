@@ -3,7 +3,7 @@ from extensions import db
 from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, current_user
-
+from models.favorite import Favorite
 profile_bp = Blueprint('profile', __name__)
 
 @profile_bp.route('/info', methods=['GET'])
@@ -82,10 +82,9 @@ def change_password():
         db.session.rollback()
         return jsonify({'error': f'Ошибка при изменении пароля: {str(e)}'}), 500
 
-@profile_bp.route('/favorites', methods=['GET'])
+@profile_bp.route('/api/profile/favorites', methods=['GET'])
 @login_required
-def get_favorites():
-    """Get user favorites (placeholder - you'll need to add a favorites model)"""
-    return jsonify({
-        'favorites': []
-    }), 200
+def get_user_favorites():
+    """Получить список избранного для текущего пользователя"""
+    favorites = Favorite.query.filter_by(user_id=current_user.id).all()
+    return jsonify({'favorites': [fav.to_dict() for fav in favorites]})

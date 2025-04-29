@@ -11,13 +11,90 @@
   position: relative;
 }
 
+.Top10-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
 .Top10-title {
   display: flex;
   align-items: center;
   color: #fff;
   font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   position: relative;
+}
+
+/* Улучшенные стили для переключателя день/неделя с анимацией */
+.time-window-toggle {
+  display: flex;
+  border-radius: 20px;
+  background-color: #1f1f1f;
+  overflow: hidden;
+  border: 1px solid #333;
+  position: relative;
+  padding: 3px;
+  width: 285px;
+}
+
+/* Элемент фона-индикатора для активной кнопки */
+.time-window-toggle::before {
+  content: "";
+  position: absolute;
+  height: calc(100% - 6px);
+  width: calc(50% - 4px);
+  top: 3px;
+  left: 3px;
+  border-radius: 16px;
+  background-color: #0066ffb3;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 0;
+}
+
+/* Когда активна правая кнопка, двигаем индикатор */
+.time-window-toggle:has(.time-window-btn:nth-child(2).active)::before {
+  transform: translateX(100%);
+}
+
+.time-window-btn {
+  flex: 1;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  border-radius: 16px;
+  font-family: Nunito, sans-serif;
+}
+
+.time-window-btn:disabled {
+  cursor: default;
+}
+
+.time-window-btn.active {
+  color: white;
+  font-weight: 600;
+}
+
+.time-window-btn .btn-text {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.time-window-btn.active .btn-text {
+  transform: scale(1.05);
+}
+
+.time-window-btn:hover:not(.active):not(:disabled) {
+  color: #fff;
 }
 
 .Top10-slider-container {
@@ -30,15 +107,15 @@
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
   gap: 15px;
   padding: 10px 0;
-  width: 100%; 
+  width: 100%;
 }
 
 .Top10-slider::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
 .Top10-slider-page {
@@ -107,7 +184,6 @@
 
 .number-container {
   width: 100%;
-  /* height: 100%; */
   position: relative;
 }
 
@@ -171,7 +247,7 @@
   transform: translateY(-50%);
   width: 36px;
   height: 36px;
-  background-color: rgba(0, 102, 255, 0.7);
+  background-color: #0066ffb3;
   border: none;
   border-radius: 50%;
   display: flex;
@@ -179,7 +255,13 @@
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+  background-color: rgba(0, 102, 255, 0.9);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .prev-btn {
@@ -212,6 +294,71 @@
   background-color: #0066ff;
 }
 
+/* Анимация скелетона загрузки */
+.skeleton-poster {
+  background-color: #1a1a1a;
+}
+
+.skeleton-number .number-text {
+  fill: #2a2a2a;
+  -webkit-text-stroke: 1px #222;
+}
+
+.skeleton-animation {
+  position: relative;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+.skeleton-animation::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Анимация появления контента */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Состояния загрузки и ошибки */
+.Top10-error,
+.Top10-empty {
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
 
 @media (max-width: 1600px) {
   .Top10-movie-card {
@@ -229,6 +376,16 @@
   .Top10-movie-card {
     width: calc(33.333% - 10px);
   }
+
+  .Top10-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .time-window-toggle {
+    margin-top: 10px;
+    background-color: #0066ffb3;
+  }
 }
 
 @media (max-width: 768px) {
@@ -237,3 +394,28 @@
   }
 }
 
+@media (max-width: 480px) {
+  .time-window-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Для браузеров, которые не поддерживают :has() селектор */
+@supports not (selector(:has(*))) {
+  .time-window-btn.active {
+    background-color: transparent;
+  }
+
+  .time-window-toggle
+    .time-window-btn:first-child.active
+    ~ .time-window-toggle::before {
+    transform: translateX(0);
+  }
+
+  .time-window-toggle
+    .time-window-btn:last-child.active
+    ~ .time-window-toggle::before {
+    transform: translateX(100%);
+  }
+}

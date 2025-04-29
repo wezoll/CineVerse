@@ -1,35 +1,72 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./PopularFilms.css";
-import moviesData from "../../../db.json";
-import MovieModal from "../MovieModal/MovieModal";
-import TrailerModal from "../TrailerModal/TrailerModal";
+import { movieService } from "../../services/movieService";
 
 const PopularFilms = () => {
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [favorites, setFavorites] = useState({});
-  const [showTrailerModal, setShowTrailerModal] = useState(false);
-  const [showExternalModal, setShowExternalModal] = useState(false);
-  const [externalUrl, setExternalUrl] = useState("");
   const sliderRef = useRef(null);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const movies = moviesData.movies || moviesData;
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        setLoading(true);
+        const data = await movieService.getPopularMovies(1);
+        setMovies(data.results || []);
+        setLoading(false);
+      } catch (err) {
+        setError("Произошла ошибка при загрузке фильмов");
+        setLoading(false);
+      }
+    };
 
-  const PopularFilms = Array.isArray(movies)
-    ? movies.filter((movie) => movie.category === "popular")
-    : [];
+    fetchMovies();
+  }, []);
+
+  const checkScrollButtons = () => {
+    if (sliderRef.current) {
+      const slider = sliderRef.current;
+      const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+
+      setCanScrollLeft(slider.scrollLeft > 10);
+      setCanScrollRight(slider.scrollLeft < maxScrollLeft - 10);
+    }
+  };
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+
+    const handleScrollAndResize = () => {
+      checkScrollButtons();
+      setTimeout(checkScrollButtons, 100);
+    };
+
+    if (slider) {
+      slider.addEventListener("scroll", handleScrollAndResize);
+      window.addEventListener("resize", handleScrollAndResize);
+
+      handleScrollAndResize();
+
+      return () => {
+        slider.removeEventListener("scroll", handleScrollAndResize);
+        window.removeEventListener("resize", handleScrollAndResize);
+      };
+    }
+  }, [movies]);
 
   const scrollRight = () => {
     if (sliderRef.current) {
       const slider = sliderRef.current;
       const scrollAmount = slider.clientWidth;
+      slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
 
-      slider.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
+      setTimeout(checkScrollButtons, 300);
+      setTimeout(checkScrollButtons, 600);
     }
   };
 
@@ -37,114 +74,55 @@ const PopularFilms = () => {
     if (sliderRef.current) {
       const slider = sliderRef.current;
       const scrollAmount = slider.clientWidth;
+      slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
 
-      slider.scrollBy({
-        left: -scrollAmount,
-        behavior: "smooth",
-      });
+      setTimeout(checkScrollButtons, 300);
+      setTimeout(checkScrollButtons, 600);
     }
   };
-
-  const toggleFavorite = (movieId) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [movieId]: !prev[movieId],
-    }));
-  };
-
-  const checkScrollButtons = () => {
-    if (sliderRef.current) {
-      const slider = sliderRef.current;
-      const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
-
-      setCanScrollLeft(slider.scrollLeft > 0);
-      setCanScrollRight(slider.scrollLeft < maxScrollLeft);
-    }
-  };
-
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (slider) {
-      slider.addEventListener("scroll", checkScrollButtons);
-
-      checkScrollButtons();
-
-      return () => {
-        slider.removeEventListener("scroll", checkScrollButtons);
-      };
-    }
-  }, []);
 
   const openMovieInfo = (movie) => {
-    setSelectedMovie(movie);
-    setShowModal(true);
-    document.body.style.overflow = "hidden";
+    navigate(`/movie/${movie.id}`);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    document.body.style.overflow = "auto";
-  };
-
-  const openTrailerModal = (url) => {
-    setShowTrailerModal(true);
-    setShowModal(false);
-  };
-
-  const closeTrailerModal = () => {
-    setShowTrailerModal(false);
-    setShowModal(true);
-  };
-
-  const openExternalModal = (url) => {
-    setExternalUrl(url);
-    setShowExternalModal(true);
-  };
-
-  const closeExternalModal = () => {
-    setShowExternalModal(false);
-  };
-
-  const handleExternalLink = (url) => {
-    openExternalModal(url);
-  };
-
-  const confirmExternalRedirect = () => {
-    window.open(externalUrl, "_blank");
-    closeExternalModal();
-  };
-
-  useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key === "Escape") {
-        if (showExternalModal) {
-          closeExternalModal();
-        } else if (showTrailerModal) {
-          closeTrailerModal();
-        } else if (showModal) {
-          closeModal();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleEscKey);
-    return () => {
-      window.removeEventListener("keydown", handleEscKey);
-    };
-  }, [showModal, showTrailerModal, showExternalModal]);
-
-  const isFavorite = selectedMovie
-    ? favorites[selectedMovie.id] || false
-    : false;
-
-  if (PopularFilms.length === 0) {
+  if (loading) {
     return (
       <section className="popular-section">
         <div className="popular-container">
           <h2 className="popular-title">
             <span className="popular-title-text">Популярные фильмы</span>
           </h2>
-          <div className="popular-loading">Loading popular movies...</div>
+          <div className="popular-loading-skeleton">
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="popular-loading-card"></div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="popular-section">
+        <div className="popular-container">
+          <h2 className="popular-title">
+            <span className="popular-title-text">Популярные фильмы</span>
+          </h2>
+          <div className="popular-error">{error}</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (movies.length === 0) {
+    return (
+      <section className="popular-section">
+        <div className="popular-container">
+          <h2 className="popular-title">
+            <span className="popular-title-text">Популярные фильмы</span>
+          </h2>
+          <div className="popular-empty">Нет доступных фильмов</div>
         </div>
       </section>
     );
@@ -153,10 +131,16 @@ const PopularFilms = () => {
   return (
     <section className="popular-section">
       <div className="popular-container">
-        <h2 className="popular-title">
-          <span className="popular-title-text">Популярные фильмы</span>
-          <span className="popular-title-icon"></span>
-        </h2>
+        <div className="popular-header">
+          <h2 className="popular-title">
+            <span className="popular-title-text">Популярные фильмы</span>
+            <span className="popular-title-icon"></span>
+          </h2>
+          <Link to="/popular-movies" className="all-popular-link">
+            Все популярные
+            <span className="all-popular-underline"></span>
+          </Link>
+        </div>
 
         <div className="popular-slider-container">
           {canScrollLeft && (
@@ -180,17 +164,25 @@ const PopularFilms = () => {
           )}
 
           <div className="popular-slider" ref={sliderRef}>
-            {PopularFilms.map((movie) => (
+            {movies.map((movie) => (
               <div className="popular-movie-card" key={movie.id}>
                 <div
                   className="popular-movie-poster"
-                  style={{ backgroundImage: `url(${movie.poster})` }}
+                  style={{
+                    backgroundImage: movie.poster_path
+                      ? `url(https://image.tmdb.org/t/p/w500${movie.poster_path})`
+                      : "none",
+                  }}
                   onClick={() => openMovieInfo(movie)}
                 >
                   <div className="popular-movie-overlay"></div>
                   <div className="popular-movie-info">
                     <h3 className="popular-movie-title">{movie.title}</h3>
-                    <p className="popular-movie-year">{movie.year}</p>
+                    <p className="popular-movie-year">
+                      {movie.release_date
+                        ? new Date(movie.release_date).getFullYear()
+                        : ""}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -218,29 +210,6 @@ const PopularFilms = () => {
           )}
         </div>
       </div>
-
-      <MovieModal
-        selectedMovie={selectedMovie}
-        showModal={showModal}
-        closeModal={closeModal}
-        handleExternalLink={handleExternalLink}
-        openTrailerModal={openTrailerModal}
-        showExternalModal={showExternalModal}
-        closeExternalModal={closeExternalModal}
-        confirmExternalRedirect={confirmExternalRedirect}
-        externalUrl={externalUrl}
-        isFavorite={isFavorite}
-        toggleFavorite={() => selectedMovie && toggleFavorite(selectedMovie.id)}
-      />
-
-      {showTrailerModal && selectedMovie && (
-        <TrailerModal
-          isOpen={showTrailerModal}
-          onClose={closeTrailerModal}
-          trailerUrl={selectedMovie.trailerLink}
-          movieTitle={selectedMovie.title}
-        />
-      )}
     </section>
   );
 };
