@@ -127,6 +127,32 @@
   align-items: center;
 }
 
+.favorite-button-hero {
+  height: 46px;
+  width: 46px;
+  min-width: unset;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(49, 48, 48, 0.5);
+  border: none;
+}
+
+.favorite-button-hero .favorite-text {
+  display: none;
+}
+
+.favorite-button-hero .favorite-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.favorite-button-hero:hover {
+  background-color: rgba(71, 70, 70, 0.7);
+}
+
 @media (max-width: 1200px) {
   .hero-block-main {
     flex-direction: column;

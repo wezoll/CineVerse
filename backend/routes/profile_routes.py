@@ -82,3 +82,19 @@ def change_password():
         db.session.rollback()
         return jsonify({'error': f'Ошибка при изменении пароля: {str(e)}'}), 500
 
+@profile_bp.route('/favorites', methods=['GET'])
+@login_required
+def get_user_favorites():
+    """Получение списка избранных элементов пользователя для профиля"""
+    try:
+        favorites = Favorite.query.filter_by(user_id=current_user.id).all()
+        return jsonify({
+            'success': True,
+            'favorites': [favorite.to_dict() for favorite in favorites]
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+

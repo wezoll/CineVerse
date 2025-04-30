@@ -4,6 +4,7 @@ import { movieService } from "../../services/movieService";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Reviews from "../../components/Reviews/Reviews";
+import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {
@@ -182,15 +183,24 @@ const MovieDetails = () => {
                   ))}
               </div>
 
-              {/* Кнопка просмотра трейлера */}
-              {trailerKey && (
-                <button
-                  className="cineverse-watch-trailer-btn"
-                  onClick={() => setActiveTab("trailer")}
-                >
-                  Смотреть трейлер
-                </button>
-              )}
+              {/* Кнопки действий */}
+              <div className="cineverse-movie-actions">
+                {trailerKey ? (
+                  <button
+                    className="cineverse-watch-trailer-btn"
+                    onClick={() => setActiveTab("trailer")}
+                  >
+                    Смотреть трейлер
+                  </button>
+                ) : (
+                  <div className="cineverse-trailer-placeholder"></div>
+                )}
+                <FavoriteButton
+                  itemId={movie.id}
+                  itemType="movie"
+                  className="cineverse-favorite-btn"
+                />
+              </div>
             </div>
           </div>
 

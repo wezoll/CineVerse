@@ -4,6 +4,7 @@ import { tvService } from "../../services/TVService";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Reviews from "../../components/Reviews/Reviews";
+import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
 import "./SeriesDetails.css";
 
 const SeriesDetails = () => {
@@ -166,15 +167,24 @@ const SeriesDetails = () => {
                   ))}
               </div>
 
-              {/* Кнопка просмотра трейлера */}
-              {trailerKey && (
-                <button
-                  className="cineverse-watch-trailer-btn"
-                  onClick={() => setActiveTab("trailer")}
-                >
-                  Смотреть трейлер
-                </button>
-              )}
+              {/* Кнопки действий */}
+              <div className="cineverse-movie-actions">
+                {trailerKey ? (
+                  <button
+                    className="cineverse-watch-trailer-btn"
+                    onClick={() => setActiveTab("trailer")}
+                  >
+                    Смотреть трейлер
+                  </button>
+                ) : (
+                  <div className="cineverse-trailer-placeholder"></div>
+                )}
+                <FavoriteButton
+                  itemId={series.id}
+                  itemType="tv"
+                  className="cineverse-favorite-btn"
+                />
+              </div>
             </div>
           </div>
 

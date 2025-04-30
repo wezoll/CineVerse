@@ -8,6 +8,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useNavigate } from "react-router-dom";
 import deadpool from "../../assets/Hero/deadpool.png";
 import moviesData from "../../../db.json";
+import { favoriteService } from "../../services/favoriteService";
 
 const Knight = () => {
   const gltf = useLoader(GLTFLoader, "/deadpool/scene.gltf");
@@ -32,6 +33,10 @@ const Knight = () => {
 const Hero = () => {
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const MOVIE_ID = 533535;
+  const ITEM_TYPE = "movie";
 
   const heroMovie = moviesData.movies
     ? moviesData.movies.find((movie) => movie.category === "Hero")
@@ -39,38 +44,67 @@ const Hero = () => {
 
   // Проверка статуса избранного при загрузке компонента
   useEffect(() => {
-    if (heroMovie) {
-      // Проверяем, есть ли этот фильм в localStorage в избранном
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-      const isFav = favorites.some((favMovie) => favMovie.id === heroMovie.id);
-      setIsFavorite(isFav);
-    }
-  }, [heroMovie]);
+    const checkIfFavorite = async () => {
+      try {
+        const data = await favoriteService.checkFavorite(MOVIE_ID, ITEM_TYPE);
+        setIsFavorite(data.is_favorite);
+        setFavoriteId(data.favorite_id);
+      } catch (error) {
+        if (
+          error.message &&
+          (error.message.includes("401") || error.message.includes("403"))
+        ) {
+          setIsAuthenticated(false);
+        }
+        console.error("Ошибка при проверке избранного:", error);
+      }
+    };
+
+    checkIfFavorite();
+  }, []);
 
   const navigateToMoviePage = () => {
-    if (heroMovie) {
-      // Переходим на страницу фильма, используя его ID
-      navigate(`/movie/533535`);
-    }
+    navigate(`/movie/${MOVIE_ID}`);
   };
 
-  const toggleFavorite = () => {
-    if (heroMovie) {
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  const toggleFavorite = async () => {
+    if (!isAuthenticated) {
+      // Перенаправление на страницу входа
+      window.location.href = "/auth/login?redirect=" + window.location.pathname;
+      return;
+    }
 
-      if (isFavorite) {
+    try {
+      // Оптимистичное обновление UI
+      const wasInFavorites = isFavorite;
+      setIsFavorite(!isFavorite);
+
+      if (wasInFavorites) {
         // Удаляем из избранного
-        const updatedFavorites = favorites.filter(
-          (movie) => movie.id !== heroMovie.id
-        );
-        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+        await favoriteService.removeFromFavorites(favoriteId);
+        setFavoriteId(null);
       } else {
         // Добавляем в избранное
-        const updatedFavorites = [...favorites, heroMovie];
-        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+        const response = await favoriteService.addToFavorites(
+          MOVIE_ID,
+          ITEM_TYPE
+        );
+        setFavoriteId(response.favorite.id);
       }
+    } catch (error) {
+      // В случае ошибки возвращаем предыдущее состояние
+      setIsFavorite(isFavorite);
 
-      setIsFavorite(!isFavorite);
+      if (
+        error.message &&
+        (error.message.includes("401") || error.message.includes("403"))
+      ) {
+        setIsAuthenticated(false);
+        // Перенаправление на страницу входа
+        window.location.href =
+          "/auth/login?redirect=" + window.location.pathname;
+      }
+      console.error("Ошибка при изменении избранного:", error);
     }
   };
 
@@ -104,6 +138,13 @@ const Hero = () => {
                 <button
                   className="favorite-button-main"
                   onClick={toggleFavorite}
+                  title={
+                    isAuthenticated
+                      ? isFavorite
+                        ? "Удалить из избранного"
+                        : "Добавить в избранное"
+                      : "Авторизуйтесь, чтобы добавить в избранное"
+                  }
                 >
                   <img
                     src={
