@@ -248,9 +248,6 @@ const ReviewsManagement = () => {
                               `${selectedReview.item_type}-${selectedReview.item_id}`
                             ].name}
                       </p>
-                      <p>
-                        <strong>ID:</strong> {selectedReview.item_id}
-                      </p>
                       {itemDetails[
                         `${selectedReview.item_type}-${selectedReview.item_id}`
                       ].poster_path && (
