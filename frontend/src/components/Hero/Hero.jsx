@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import deadpool from "../../assets/Hero/deadpool.png";
 import moviesData from "../../../db.json";
 import { favoriteService } from "../../services/favoriteService";
+import Notification from "../Notification/Notification";
 
 const Knight = () => {
   const gltf = useLoader(GLTFLoader, "/deadpool/scene.gltf");
@@ -35,6 +36,8 @@ const Hero = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
   const MOVIE_ID = 533535;
   const ITEM_TYPE = "movie";
 
@@ -69,8 +72,10 @@ const Hero = () => {
 
   const toggleFavorite = async () => {
     if (!isAuthenticated) {
-      // Перенаправление на страницу входа
-      window.location.href = "/auth/login?redirect=" + window.location.pathname;
+      setNotificationMessage(
+        "Пожалуйста, войдите в систему, чтобы добавить в избранное"
+      );
+      setShowNotification(true);
       return;
     }
 
@@ -83,6 +88,8 @@ const Hero = () => {
         // Удаляем из избранного
         await favoriteService.removeFromFavorites(favoriteId);
         setFavoriteId(null);
+        setNotificationMessage("Удалено из избранного");
+        setShowNotification(true);
       } else {
         // Добавляем в избранное
         const response = await favoriteService.addToFavorites(
@@ -90,6 +97,8 @@ const Hero = () => {
           ITEM_TYPE
         );
         setFavoriteId(response.favorite.id);
+        setNotificationMessage("Добавлено в избранное");
+        setShowNotification(true);
       }
     } catch (error) {
       // В случае ошибки возвращаем предыдущее состояние
@@ -100,9 +109,10 @@ const Hero = () => {
         (error.message.includes("401") || error.message.includes("403"))
       ) {
         setIsAuthenticated(false);
-        // Перенаправление на страницу входа
-        window.location.href =
-          "/auth/login?redirect=" + window.location.pathname;
+        setNotificationMessage(
+          "Пожалуйста, войдите в систему, чтобы добавить в избранное"
+        );
+        setShowNotification(true);
       }
       console.error("Ошибка при изменении избранного:", error);
     }
@@ -175,6 +185,13 @@ const Hero = () => {
           </Canvas>
         </div>
       </div>
+      {showNotification && (
+        <Notification
+          message={notificationMessage}
+          type={isAuthenticated ? "success" : "info"}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </section>
   );
 };
