@@ -3,6 +3,8 @@ import requests
 import asyncio
 import aiohttp
 from config import Config
+from models.hidden_content import HiddenContent
+from extensions import db
 
 search_bp = Blueprint('search', __name__)
 
@@ -38,10 +40,18 @@ def combined_search():
     movies_data = movies_response.json()
     tv_data = tv_response.json()
     
-    # Добавляем тип медиа к каждому результату
+    # Получаем список скрытого контента
+    hidden_content = HiddenContent.query.all()
+    hidden_items = {(item.item_type, item.item_id) for item in hidden_content}
+    
+    # Добавляем тип медиа к каждому результату и фильтруем скрытый контент
+    filtered_movies = []
     for item in movies_data.get('results', []):
         item['media_type'] = 'movie'
+        if ('movie', item['id']) not in hidden_items:
+            filtered_movies.append(item)
     
+    filtered_tv = []
     for item in tv_data.get('results', []):
         item['media_type'] = 'series'
         # Переименовываем поля для совместимости с интерфейсом фильмов
@@ -49,9 +59,11 @@ def combined_search():
             item['title'] = item['name']
         if 'first_air_date' in item:
             item['release_date'] = item['first_air_date']
+        if ('tv', item['id']) not in hidden_items:
+            filtered_tv.append(item)
     
-    # Объединяем результаты
-    combined_results = movies_data.get('results', []) + tv_data.get('results', [])
+    # Объединяем отфильтрованные результаты
+    combined_results = filtered_movies + filtered_tv
     
     # Сортируем по популярности (если доступно) или по рейтингу
     combined_results.sort(key=lambda x: (x.get('popularity', 0) or 0), reverse=True)

@@ -11,7 +11,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
+    role = db.Column(db.String(50), nullable=False, default='user')
     
     def get_id(self):
         return str(self.id)
@@ -34,5 +34,6 @@ class User(db.Model, UserMixin):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
+            'role': self.role,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }

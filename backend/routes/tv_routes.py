@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 import requests
 from config import Config
+from models.hidden_content import HiddenContent
+from extensions import db
 
 tv_bp = Blueprint('tv', __name__)
 
@@ -22,10 +24,23 @@ def get_popular_tv_shows():
     response = requests.get(url, params=params)
     data = response.json()
     
+    # Получаем список скрытых сериалов
+    hidden_shows = HiddenContent.query.filter_by(item_type='tv').all()
+    hidden_show_ids = {item.item_id for item in hidden_shows}
+    
+    # Фильтруем скрытые сериалы из результатов
+    if 'results' in data:
+        data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
+    
     return jsonify(data)
 
 @tv_bp.route('/<int:tv_id>', methods=['GET'])
 def get_tv_details(tv_id):
+    # Проверяем, не скрыт ли сериал
+    hidden_show = HiddenContent.query.filter_by(item_type='tv', item_id=tv_id).first()
+    if hidden_show:
+        return jsonify({'error': 'Сериал скрыт'}), 404
+    
     extended = request.args.get('extended', 'false').lower() == 'true'
     
     url = f"{BASE_URL}/tv/{tv_id}"
@@ -95,5 +110,43 @@ def search_tv_shows():
     
     response = requests.get(url, params=params)
     data = response.json()
+    
+    # Получаем список скрытых сериалов
+    hidden_shows = HiddenContent.query.filter_by(item_type='tv').all()
+    hidden_show_ids = {item.item_id for item in hidden_shows}
+    
+    # Фильтруем скрытые сериалы из результатов поиска
+    if 'results' in data:
+        data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
+    
+    return jsonify(data)
+
+@tv_bp.route('/discover', methods=['GET'])
+def discover_tv_shows():
+    genre = request.args.get('genre', '')
+    page = request.args.get('page', 1)
+    
+    url = f"{BASE_URL}/discover/tv"
+    params = {
+        'api_key': API_KEY,
+        'language': LANGUAGE,
+        'page': page,
+        'sort_by': 'popularity.desc',
+        'include_adult': False
+    }
+    
+    if genre:
+        params['with_genres'] = genre
+    
+    response = requests.get(url, params=params)
+    data = response.json()
+    
+    # Получаем список скрытых сериалов
+    hidden_shows = HiddenContent.query.filter_by(item_type='tv').all()
+    hidden_show_ids = {item.item_id for item in hidden_shows}
+    
+    # Фильтруем скрытые сериалы из результатов
+    if 'results' in data:
+        data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
     
     return jsonify(data)

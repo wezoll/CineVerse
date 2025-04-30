@@ -6,7 +6,7 @@
 }
 
 .profile-container {
-  max-width: 1250px;
+  max-width: 1450px;
   margin: 0 auto;
   background-color: #1a1a1a;
   border-radius: 12px;
@@ -659,4 +659,43 @@
   100% {
     opacity: 0.6;
   }
+}
+
+/* Добавляем стили для бейджа роли пользователя */
+.user-role-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  color: white;
+  background-color: #e74c3c;
+  margin-top: 8px;
+}
+
+/* Стили для админ-вкладки */
+.tab-button.admin-tab {
+  background: none;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tab-button.admin-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: none;
+}
+
+.tab-button.admin-tab.active {
+  color: #fff;
+  background: none;
+  box-shadow: none;
+}
+
+.tab-button.admin-tab.active::after {
+  transform: scaleX(1);
+}
+
+/* Контейнер для админ-панели */
+.profile-admin {
+  width: 100%;
+  padding: 20px 0;
 }

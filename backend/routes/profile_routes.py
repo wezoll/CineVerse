@@ -16,6 +16,7 @@ def get_profile_info():
             'first_name': current_user.first_name,
             'last_name': current_user.last_name,
             'email': current_user.email,
+            'role': current_user.role,
             'created_at': current_user.created_at.strftime('%d.%m.%Y')
         }
     }), 200
@@ -43,6 +44,7 @@ def update_profile():
                 'first_name': current_user.first_name,
                 'last_name': current_user.last_name,
                 'email': current_user.email,
+                'role': current_user.role,
                 'created_at': current_user.created_at.strftime('%d.%m.%Y')
             }
         }), 200

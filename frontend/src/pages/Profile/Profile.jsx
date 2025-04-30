@@ -5,9 +5,11 @@ import PasswordModal from "./PasswordModal/PasswordModal";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Reviews from "../../components/Reviews/Reviews";
+import AdminPanel from "../../components/AdminPanel/AdminPanel";
 import { favoriteService } from "../../services/favoriteService";
 import { movieService } from "../../services/movieService";
 import { tvService } from "../../services/TVService";
+import { adminService } from "../../services/adminService";
 import { Link } from "react-router-dom";
 
 const API_URL = "http://localhost:5000";
@@ -18,6 +20,7 @@ const Profile = () => {
     last_name: "",
     email: "",
     created_at: "",
+    role: "user",
   });
 
   const [favorites, setFavorites] = useState([]);
@@ -34,6 +37,8 @@ const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  const [isAdminPanelAvailable, setIsAdminPanelAvailable] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,12 +62,21 @@ const Profile = () => {
         }
 
         const data = await response.json();
+        console.log("Полученные данные пользователя:", data.user);
         setUser(data.user);
         setFormData({
           first_name: data.user.first_name,
           last_name: data.user.last_name,
           email: data.user.email,
         });
+
+        console.log("Роль пользователя:", data.user.role);
+        if (data.user.role === "admin" || data.user.role === "super_admin") {
+          console.log("Включаем доступ к админ-панели");
+          setIsAdminPanelAvailable(true);
+        } else {
+          console.log("Нет доступа к админ-панели, роль:", data.user.role);
+        }
       } catch (err) {
         console.error("Ошибка загрузки данных:", err);
         setError(err.message);
@@ -229,6 +243,13 @@ const Profile = () => {
                 {user.first_name} {user.last_name}
               </h1>
               <p>{user.email}</p>
+              {user.role && user.role !== "user" && (
+                <span className="user-role-badge">
+                  {user.role === "super_admin"
+                    ? "Супер-админ"
+                    : "Администратор"}
+                </span>
+              )}
             </div>
             <div className="profile-actions">
               <button className="logout-button" onClick={handleLogout}>
@@ -268,6 +289,16 @@ const Profile = () => {
             >
               Настройки
             </button>
+            {isAdminPanelAvailable && (
+              <button
+                className={`tab-button admin-tab ${
+                  activeTab === "admin" ? "active" : ""
+                }`}
+                onClick={() => handleTabChange("admin")}
+              >
+                Админ-панель
+              </button>
+            )}
           </div>
 
           <div className="profile-content">
@@ -507,6 +538,12 @@ const Profile = () => {
                     Изменить пароль
                   </button>
                 </div>
+              </div>
+            )}
+
+            {activeTab === "admin" && (
+              <div className="profile-admin">
+                <AdminPanel />
               </div>
             )}
           </div>

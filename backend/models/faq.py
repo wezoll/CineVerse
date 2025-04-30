@@ -8,6 +8,9 @@ class FAQ(db.Model):
     answer = db.Column(db.Text, nullable=False)
     order = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
+    updated_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    updated_user = db.relationship('User', backref='updated_faqs', lazy=True)
     
     def to_dict(self):
         return {
@@ -15,5 +18,6 @@ class FAQ(db.Model):
             'question': self.question,
             'answer': self.answer,
             'order': self.order,
-            'is_active': self.is_active
+            'is_active': self.is_active,
+            'updated_by': self.updated_by
         }

@@ -15,6 +15,7 @@ from routes.search_routes import search_bp
 from routes.trending_routes import trending_bp
 from routes.releases_routes import releases_bp
 from routes.favorite_routes import favorites_bp
+from routes.admin_routes import admin_bp
 from models.user import User
 
 load_dotenv()
@@ -45,5 +46,6 @@ app.register_blueprint(search_bp, url_prefix="/api/search")
 app.register_blueprint(trending_bp, url_prefix='/api/trending')
 app.register_blueprint(releases_bp, url_prefix='/api/releases')
 app.register_blueprint(favorites_bp)
+app.register_blueprint(admin_bp, url_prefix='/api/admin')
 if __name__ == "__main__":
     app.run(debug=True)
