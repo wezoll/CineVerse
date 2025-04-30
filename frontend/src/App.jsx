@@ -14,11 +14,11 @@ import Footer from "./components/Footer/Footer";
 import Profile from "./pages/Profile/Profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import FAQPage from "./pages/FAQ/FAQ";
-import MovieDetails from "./components/MovieDetails/MovieDetails";
-import PopularMovies from "./components/PopularMovies/PopularMovies";
-import SearchResults from "./components/SearchResults/SearchResults";
-import PopularTV from "./components/PopularTV/PopularTV";
-import SeriesDetails from "./components/SeriesDetails/SeriesDetails";
+import MovieDetails from "./pages/MovieDetails/MovieDetails";
+import PopularMovies from "./pages/PopularMovies/PopularMovies";
+import SearchResults from "./pages/SearchResults/SearchResults";
+import PopularTV from "./pages/PopularTV/PopularTV";
+import SeriesDetails from "./pages/SeriesDetails/SeriesDetails";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {

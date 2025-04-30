@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { movieService } from "../../services/movieService";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import Reviews from "../Reviews/Reviews";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
+import Reviews from "../../components/Reviews/Reviews";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {

@@ -1,46 +1,46 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { movieService } from "../../services/movieService";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import "./PopularMovies.css";
+import { tvService } from "../../services/TVService";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
+import "./PopularTV.css";
 
-const PopularMovies = () => {
-  const [movies, setMovies] = useState([]);
+const PopularTV = () => {
+  const [series, setSeries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const moviesPerPage = 24;
+  const seriesPerPage = 24;
   const maxPages = 50; // Ограничиваем количество страниц до 50
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchSeries = async () => {
       try {
         setLoading(true);
-        // Запрашиваем две страницы, чтобы получить 24 фильма (по 20 на странице)
-        const page1 = await movieService.getPopularMovies(currentPage);
-        const page2 = await movieService.getPopularMovies(currentPage + 1);
+        // Запрашиваем две страницы, чтобы получить 24 сериала (по 20 на странице)
+        const page1 = await tvService.getPopularSeries(currentPage);
+        const page2 = await tvService.getPopularSeries(currentPage + 1);
 
-        // Объединяем результаты и берем первые 24 фильма
+        // Объединяем результаты и берем первые 24 сериала
         const combinedResults = [...page1.results, ...page2.results].slice(
           0,
-          moviesPerPage
+          seriesPerPage
         );
-        setMovies(combinedResults);
+        setSeries(combinedResults);
 
         // Ограничиваем количество страниц до maxPages
         setTotalPages(
-          Math.min(Math.ceil(page1.total_results / moviesPerPage), maxPages)
+          Math.min(Math.ceil(page1.total_results / seriesPerPage), maxPages)
         );
         setLoading(false);
       } catch (err) {
-        setError("Произошла ошибка при загрузке фильмов");
+        setError("Произошла ошибка при загрузке сериалов");
         setLoading(false);
       }
     };
 
-    fetchMovies();
+    fetchSeries();
   }, [currentPage]);
 
   const handlePageChange = (newPage) => {
@@ -61,34 +61,36 @@ const PopularMovies = () => {
   return (
     <>
       <Header />
-      <div className="popular-movies">
-        <h1>Популярные фильмы</h1>
+      <div className="popular-series">
+        <h1>Популярные сериалы</h1>
 
-        <div className="movies-grid">
-          {movies.map((movie) => (
+        <div className="series-grid">
+          {series.map((show) => (
             <Link
-              to={`/movie/${movie.id}`}
-              key={movie.id}
-              className="movie-card"
+              to={`/series/${show.id}`}
+              key={show.id}
+              className="series-card"
             >
-              <div className="movie-poster-container">
-                {movie.poster_path ? (
+              <div className="series-poster-container">
+                {show.poster_path ? (
                   <img
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
-                    className="movie-poster"
+                    src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
+                    alt={show.name}
+                    className="series-poster"
                   />
                 ) : (
                   <div className="no-poster">Нет изображения</div>
                 )}
-                <div className="movie-overlay">
-                  <div className="movie-info">
-                    <h3>{movie.title}</h3>
-                    <div className="movie-date">
-                      {new Date(movie.release_date).getFullYear()}
+                <div className="series-overlay">
+                  <div className="series-info">
+                    <h3>{show.name}</h3>
+                    <div className="series-date">
+                      {show.first_air_date
+                        ? new Date(show.first_air_date).getFullYear()
+                        : "Н/Д"}
                     </div>
-                    <div className="movie-rating">
-                      {movie.vote_average.toFixed(1)}
+                    <div className="series-rating">
+                      {show.vote_average.toFixed(1)}
                     </div>
                   </div>
                 </div>
@@ -120,4 +122,4 @@ const PopularMovies = () => {
   );
 };
 
-export default PopularMovies;
+export default PopularTV;
