@@ -9,7 +9,6 @@ const MovieCategory = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [favorites, setFavorites] = useState({});
   const sliderRef = useRef(null);
 
   // Карта соответствия для идентификаторов жанров TMDB
@@ -32,17 +31,6 @@ const MovieCategory = () => {
     mystery: "Детектив",
     romance: "Мелодрама",
   };
-
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem("movieFavorites");
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("movieFavorites", JSON.stringify(favorites));
-  }, [favorites]);
 
   // Функция для загрузки фильмов по жанру
   useEffect(() => {
@@ -71,22 +59,6 @@ const MovieCategory = () => {
 
     fetchMoviesByGenre();
   }, [selectedCategory]);
-
-  const toggleFavorite = (movieId) => {
-    setFavorites((prevFavorites) => {
-      const newFavorites = { ...prevFavorites };
-      if (newFavorites[movieId]) {
-        delete newFavorites[movieId];
-      } else {
-        newFavorites[movieId] = true;
-      }
-      return newFavorites;
-    });
-  };
-
-  const isFavorite = (movieId) => {
-    return !!favorites[movieId];
-  };
 
   const getCategoryDescription = () => {
     switch (selectedCategory) {
@@ -258,25 +230,6 @@ const MovieCategory = () => {
                             }}
                           >
                             Подробнее
-                          </button>
-                          <button
-                            className="favorite-btn"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              toggleFavorite(movie.id);
-                            }}
-                          >
-                            <img
-                              src={
-                                isFavorite(movie.id)
-                                  ? "/images/heart-fill.png"
-                                  : "/images/heart.png"
-                              }
-                              alt="Heart Icon"
-                              width="20"
-                              height="20"
-                            />
                           </button>
                         </div>
                       </div>
