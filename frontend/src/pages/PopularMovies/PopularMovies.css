@@ -173,11 +173,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 300px;
+  min-height: 100vh;
   font-size: 1.2rem;
   color: white;
   padding: 0 20px;
   gap: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000;
+  z-index: 1000;
 }
 
 .error {
@@ -218,10 +225,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 160px);
+  min-height: 100vh;
   background-color: #000000;
   color: #ffffff;
   padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
 }
 
 .loading-spinner {
