@@ -71,4 +71,18 @@ export const movieService = {
       throw error;
     }
   },
+
+  // Новый метод для получения внешних ссылок фильма
+  getMovieExternalIds: async (movieId) => {
+    try {
+      const response = await fetch(`${API_URL}/${movieId}/external_ids`);
+      if (!response.ok) {
+        throw new Error("Не удалось получить внешние ссылки");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Ошибка при получении внешних ссылок:", error);
+      throw error;
+    }
+  },
 };

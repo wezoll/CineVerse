@@ -84,6 +84,18 @@ def get_movie_images(movie_id):
     
     return jsonify(data)
 
+@movies_bp.route('/<int:movie_id>/external_ids', methods=['GET'])
+def get_movie_external_ids(movie_id):
+    url = f"{BASE_URL}/movie/{movie_id}/external_ids"
+    params = {
+        'api_key': API_KEY,
+        'language': LANGUAGE
+    }
+    
+    response = requests.get(url, params=params)
+    data = response.json()
+    
+    return jsonify(data)
 
 @movies_bp.route('/search', methods=['GET'])
 def search_movies():

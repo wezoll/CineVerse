@@ -5,6 +5,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Reviews from "../../components/Reviews/Reviews";
 import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
+import ExternalLinks from "../../components/ExternalLinks/ExternalLinks";
 import "./SeriesDetails.css";
 
 const SeriesDetails = () => {
@@ -15,6 +16,7 @@ const SeriesDetails = () => {
   const [activeTab, setActiveTab] = useState("about");
   const [trailerKey, setTrailerKey] = useState(null);
   const [seriesImages, setSeriesImages] = useState({ backdrops: [] });
+  const [externalIds, setExternalIds] = useState(null);
 
   useEffect(() => {
     const fetchSeriesDetails = async () => {
@@ -36,6 +38,14 @@ const SeriesDetails = () => {
         // Получаем кадры
         const imagesData = await tvService.getTVImages(id);
         setSeriesImages(imagesData);
+
+        // Загружаем внешние ссылки
+        try {
+          const externalIdsData = await tvService.getTVExternalIds(id);
+          setExternalIds(externalIdsData);
+        } catch (externalIdsErr) {
+          console.error("Ошибка при загрузке внешних ссылок:", externalIdsErr);
+        }
 
         setLoading(false);
       } catch (err) {
@@ -328,6 +338,9 @@ const SeriesDetails = () => {
                         </div>
                       )}
                   </div>
+
+                  {/* Добавляем компонент внешних ссылок */}
+                  <ExternalLinks externalIds={externalIds} type="tv" />
                 </div>
               )}
 

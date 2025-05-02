@@ -55,4 +55,18 @@ export const tvService = {
       throw error;
     }
   },
+
+  // Метод для получения внешних ссылок сериала
+  getTVExternalIds: async (tvId) => {
+    try {
+      const response = await fetch(`${API_URL}/${tvId}/external_ids`);
+      if (!response.ok) {
+        throw new Error("Не удалось получить внешние ссылки");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Ошибка при получении внешних ссылок:", error);
+      throw error;
+    }
+  },
 };

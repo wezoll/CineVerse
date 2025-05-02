@@ -1,0 +1,61 @@
+.external-links {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #191919;
+  border-radius: 10px;
+}
+
+.external-links h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.external-links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.external-link:hover {
+  transform: translateY(-2px);
+}
+
+.external-link.imdb {
+  background-color: #f5c518;
+  color: #000;
+}
+
+.external-link.facebook {
+  background-color: #1877f2;
+}
+
+.external-link.instagram {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+}
+
+.external-link.twitter {
+  background-color: #1da1f2;
+}
+
+.external-link.freebase {
+  background-color: #0066ff;
+}

@@ -5,6 +5,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Reviews from "../../components/Reviews/Reviews";
 import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
+import ExternalLinks from "../../components/ExternalLinks/ExternalLinks";
 import "./MovieDetails.css";
 
 const MovieDetails = () => {
@@ -15,6 +16,7 @@ const MovieDetails = () => {
   const [activeTab, setActiveTab] = useState("about");
   const [trailerKey, setTrailerKey] = useState(null);
   const [movieImages, setMovieImages] = useState({ backdrops: [] });
+  const [externalIds, setExternalIds] = useState(null);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -47,6 +49,14 @@ const MovieDetails = () => {
           }
         } else {
           setMovieImages(data.images);
+        }
+
+        // Загружаем внешние ссылки
+        try {
+          const externalIdsData = await movieService.getMovieExternalIds(id);
+          setExternalIds(externalIdsData);
+        } catch (externalIdsErr) {
+          console.error("Ошибка при загрузке внешних ссылок:", externalIdsErr);
         }
 
         setLoading(false);
@@ -305,6 +315,9 @@ const MovieDetails = () => {
                       </div>
                     )}
                   </div>
+
+                  {/* Добавляем компонент внешних ссылок */}
+                  <ExternalLinks externalIds={externalIds} type="movie" />
                 </div>
               )}
 

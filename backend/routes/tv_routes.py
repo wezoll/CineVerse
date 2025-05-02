@@ -150,3 +150,16 @@ def discover_tv_shows():
         data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
     
     return jsonify(data)
+
+@tv_bp.route('/<int:tv_id>/external_ids', methods=['GET'])
+def get_tv_external_ids(tv_id):
+    url = f"{BASE_URL}/tv/{tv_id}/external_ids"
+    params = {
+        'api_key': API_KEY,
+        'language': LANGUAGE
+    }
+    
+    response = requests.get(url, params=params)
+    data = response.json()
+    
+    return jsonify(data)
