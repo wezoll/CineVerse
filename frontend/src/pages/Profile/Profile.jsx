@@ -54,7 +54,6 @@ const Profile = () => {
 
         if (!response.ok) {
           if (response.status === 401) {
-            console.log("Пользователь не авторизован, перенаправление...");
             window.location.href = "/";
             return;
           }
@@ -62,7 +61,6 @@ const Profile = () => {
         }
 
         const data = await response.json();
-        console.log("Полученные данные пользователя:", data.user);
         setUser(data.user);
         setFormData({
           first_name: data.user.first_name,
@@ -70,12 +68,8 @@ const Profile = () => {
           email: data.user.email,
         });
 
-        console.log("Роль пользователя:", data.user.role);
         if (data.user.role === "admin" || data.user.role === "super_admin") {
-          console.log("Включаем доступ к админ-панели");
           setIsAdminPanelAvailable(true);
-        } else {
-          console.log("Нет доступа к админ-панели, роль:", data.user.role);
         }
       } catch (err) {
         console.error("Ошибка загрузки данных:", err);
