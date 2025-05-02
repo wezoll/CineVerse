@@ -24,11 +24,9 @@ def get_popular_movies():
     response = requests.get(url, params=params)
     data = response.json()
     
-    # Получаем список скрытых фильмов
     hidden_movies = HiddenContent.query.filter_by(item_type='movie').all()
     hidden_movie_ids = {item.item_id for item in hidden_movies}
     
-    # Фильтруем скрытые фильмы из результатов
     if 'results' in data:
         data['results'] = [movie for movie in data['results'] if movie['id'] not in hidden_movie_ids]
     
@@ -36,7 +34,6 @@ def get_popular_movies():
 
 @movies_bp.route('/<int:movie_id>', methods=['GET'])
 def get_movie_details(movie_id):
-    # Проверяем, не скрыт ли фильм
     hidden_movie = HiddenContent.query.filter_by(item_type='movie', item_id=movie_id).first()
     if hidden_movie:
         return jsonify({'error': 'Фильм скрыт'}), 404
@@ -117,11 +114,9 @@ def search_movies():
     response = requests.get(url, params=params)
     data = response.json()
     
-    # Получаем список скрытых фильмов
     hidden_movies = HiddenContent.query.filter_by(item_type='movie').all()
     hidden_movie_ids = {item.item_id for item in hidden_movies}
     
-    # Фильтруем скрытые фильмы из результатов поиска
     if 'results' in data:
         data['results'] = [movie for movie in data['results'] if movie['id'] not in hidden_movie_ids]
     
@@ -147,11 +142,9 @@ def discover_movies():
     response = requests.get(url, params=params)
     data = response.json()
     
-    # Получаем список скрытых фильмов
     hidden_movies = HiddenContent.query.filter_by(item_type='movie').all()
     hidden_movie_ids = {item.item_id for item in hidden_movies}
     
-    # Фильтруем скрытые фильмы из результатов
     if 'results' in data:
         data['results'] = [movie for movie in data['results'] if movie['id'] not in hidden_movie_ids]
     

@@ -22,11 +22,9 @@ const SeriesDetails = () => {
     const fetchSeriesDetails = async () => {
       try {
         setLoading(true);
-        // Получаем детали сериала
         const data = await tvService.getTVDetails(id);
         setSeries(data);
 
-        // Получаем трейлеры
         const trailersData = await tvService.getTVTrailers(id);
         const trailer = trailersData.results.find(
           (video) => video.site === "YouTube" && video.type === "Trailer"
@@ -35,11 +33,9 @@ const SeriesDetails = () => {
           setTrailerKey(trailer.key);
         }
 
-        // Получаем кадры
         const imagesData = await tvService.getTVImages(id);
         setSeriesImages(imagesData);
 
-        // Загружаем внешние ссылки
         try {
           const externalIdsData = await tvService.getTVExternalIds(id);
           setExternalIds(externalIdsData);
@@ -70,15 +66,12 @@ const SeriesDetails = () => {
 
   const directors = series.created_by || [];
 
-  // Фильтруем актеров, оставляя только тех, у кого есть фото
   const castWithPhotos =
     series.credits?.cast?.filter((actor) => actor.profile_path) || [];
 
-  // Фильтруем похожие сериалы, оставляя только те, у которых есть постер
   const similarSeriesWithPosters =
     series.similar?.results?.filter((similar) => similar.poster_path) || [];
 
-  // Форматирование числа оценок
   const formatVoteCount = (count) => {
     if (count >= 1000) {
       return `${(count / 1000).toFixed(1)}K оценок`;
@@ -90,7 +83,6 @@ const SeriesDetails = () => {
     <>
       <Header />
       <div className="cineverse-movie-details">
-        {/* Фоновое изображение с градиентом */}
         <div
           className="cineverse-movie-backdrop"
           style={{
@@ -177,7 +169,6 @@ const SeriesDetails = () => {
                   ))}
               </div>
 
-              {/* Кнопки действий */}
               <div className="cineverse-movie-actions">
                 {trailerKey ? (
                   <button
@@ -198,7 +189,6 @@ const SeriesDetails = () => {
             </div>
           </div>
 
-          {/* Вкладки */}
           <div className="cineverse-movie-tabs">
             <div className="cineverse-tabs-header">
               <button
@@ -241,7 +231,6 @@ const SeriesDetails = () => {
             </div>
 
             <div className="cineverse-tabs-content">
-              {/* О сериале */}
               {activeTab === "about" && (
                 <div className="cineverse-movie-about">
                   <div className="cineverse-movie-description">
@@ -339,12 +328,10 @@ const SeriesDetails = () => {
                       )}
                   </div>
 
-                  {/* Добавляем компонент внешних ссылок */}
                   <ExternalLinks externalIds={externalIds} type="tv" />
                 </div>
               )}
 
-              {/* Трейлер */}
               {activeTab === "trailer" && trailerKey && (
                 <div className="cineverse-movie-trailer">
                   <iframe
@@ -359,7 +346,6 @@ const SeriesDetails = () => {
                 </div>
               )}
 
-              {/* Кадры из сериала */}
               {activeTab === "frames" && (
                 <div className="cineverse-frames-grid">
                   {seriesImages.backdrops &&
@@ -382,7 +368,6 @@ const SeriesDetails = () => {
                 </div>
               )}
 
-              {/* Актеры (только с фото) */}
               {activeTab === "cast" && (
                 <div className="cineverse-cast-grid">
                   {castWithPhotos.length > 0 ? (
@@ -413,10 +398,8 @@ const SeriesDetails = () => {
             </div>
           </div>
 
-          {/* Отзывы */}
           <Reviews movieId={id} />
 
-          {/* Похожие сериалы (только с постерами) */}
           {similarSeriesWithPosters.length > 0 && (
             <div className="cineverse-section">
               <h2 className="cineverse-section-title">

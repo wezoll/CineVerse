@@ -50,7 +50,6 @@ const ReviewsManagement = () => {
       setReviews(reviews.filter((review) => review.id !== reviewId));
       setSuccessMessage("Отзыв успешно удален");
 
-      // Сбрасываем сообщение через определенное время
       setTimeout(() => {
         setSuccessMessage("");
       }, 2000);

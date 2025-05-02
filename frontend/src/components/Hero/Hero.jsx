@@ -45,7 +45,6 @@ const Hero = () => {
     ? moviesData.movies.find((movie) => movie.category === "Hero")
     : null;
 
-  // Проверка статуса избранного при загрузке компонента
   useEffect(() => {
     const checkIfFavorite = async () => {
       try {
@@ -80,18 +79,15 @@ const Hero = () => {
     }
 
     try {
-      // Оптимистичное обновление UI
       const wasInFavorites = isFavorite;
       setIsFavorite(!isFavorite);
 
       if (wasInFavorites) {
-        // Удаляем из избранного
         await favoriteService.removeFromFavorites(favoriteId);
         setFavoriteId(null);
         setNotificationMessage("Удалено из избранного");
         setShowNotification(true);
       } else {
-        // Добавляем в избранное
         const response = await favoriteService.addToFavorites(
           MOVIE_ID,
           ITEM_TYPE
@@ -101,7 +97,6 @@ const Hero = () => {
         setShowNotification(true);
       }
     } catch (error) {
-      // В случае ошибки возвращаем предыдущее состояние
       setIsFavorite(isFavorite);
 
       if (

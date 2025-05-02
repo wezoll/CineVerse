@@ -16,11 +16,9 @@ LANGUAGE = "ru-RU"
 def get_movie_reviews(movie_id):
     """Получение всех отзывов для фильма (как с TMDB, так и локальных)"""
     try:
-        # Получаем локальные отзывы из нашей базы данных
         local_reviews = Review.query.filter_by(movie_id=movie_id).all()
         local_reviews_data = [review.to_dict() for review in local_reviews]
         
-        # Получаем отзывы с TMDB API
         url = f"{BASE_URL}/movie/{movie_id}/reviews"
         params = {
             'api_key': API_KEY,
@@ -30,7 +28,6 @@ def get_movie_reviews(movie_id):
         response = requests.get(url, params=params)
         tmdb_data = response.json()
         
-        # Форматируем отзывы TMDB для соответствия с нашим форматом
         tmdb_reviews = []
         if 'results' in tmdb_data:
             for review in tmdb_data['results']:
@@ -47,10 +44,8 @@ def get_movie_reviews(movie_id):
                     'avatar_path': review.get('author_details', {}).get('avatar_path', '')
                 })
         
-        # Объединяем отзывы из обоих источников
         all_reviews = local_reviews_data + tmdb_reviews
         
-        # Сортируем по дате (новые в начале)
         all_reviews.sort(key=lambda x: x['created_at'], reverse=True)
         
         return jsonify({
@@ -66,7 +61,6 @@ def get_movie_reviews(movie_id):
 @reviews_bp.route('/movie/<int:movie_id>', methods=['POST'])
 @login_required
 def create_review(movie_id):
-    """Создание нового отзыва для фильма"""
     data = request.get_json()
     rating = data.get('rating')
     content = data.get('content', '')
@@ -74,7 +68,6 @@ def create_review(movie_id):
     if not rating or not isinstance(rating, (int, float)) or rating < 0 or rating > 10:
         return jsonify({'error': 'Оценка должна быть числом от 0 до 10'}), 400
     
-    # Проверяем, оставлял ли пользователь уже отзыв на этот фильм
     existing_review = Review.query.filter_by(movie_id=movie_id, user_id=current_user.id).first()
     if existing_review:
         return jsonify({'error': 'Вы уже оставляли отзыв на этот фильм. Вы можете его отредактировать.'}), 400
@@ -102,7 +95,6 @@ def create_review(movie_id):
 @reviews_bp.route('/<int:review_id>', methods=['PUT'])
 @login_required
 def update_review(review_id):
-    """Обновление существующего отзыва"""
     review = Review.query.get(review_id)
     
     if not review:
@@ -139,7 +131,6 @@ def update_review(review_id):
 @reviews_bp.route('/<int:review_id>', methods=['DELETE'])
 @login_required
 def delete_review(review_id):
-    """Удаление отзыва"""
     review = Review.query.get(review_id)
     
     if not review:
@@ -163,7 +154,6 @@ def delete_review(review_id):
 @reviews_bp.route('/user', methods=['GET'])
 @login_required
 def get_user_reviews():
-    """Получение всех отзывов пользователя"""
     try:
         user_reviews = Review.query.filter_by(user_id=current_user.id).order_by(Review.created_at.desc()).all()
         reviews_data = [review.to_dict() for review in user_reviews]
@@ -178,13 +168,10 @@ def get_user_reviews():
     
 @reviews_bp.route('/tv/<int:series_id>', methods=['GET'])
 def get_tv_reviews(series_id):
-    """Получение всех отзывов для сериала (как с TMDB, так и локальных)"""
     try:
-        # Получаем локальные отзывы из нашей базы данных
         local_reviews = Review.query.filter_by(series_id=series_id).all()
         local_reviews_data = [review.to_dict() for review in local_reviews]
         
-        # Получаем отзывы с TMDB API
         url = f"{BASE_URL}/tv/{series_id}/reviews"
         params = {
             'api_key': API_KEY,
@@ -194,7 +181,6 @@ def get_tv_reviews(series_id):
         response = requests.get(url, params=params)
         tmdb_data = response.json()
         
-        # Форматируем отзывы TMDB для соответствия с нашим форматом
         tmdb_reviews = []
         if 'results' in tmdb_data:
             for review in tmdb_data['results']:
@@ -211,10 +197,8 @@ def get_tv_reviews(series_id):
                     'avatar_path': review.get('author_details', {}).get('avatar_path', '')
                 })
         
-        # Объединяем отзывы из обоих источников
         all_reviews = local_reviews_data + tmdb_reviews
         
-        # Сортируем по дате (новые в начале)
         all_reviews.sort(key=lambda x: x['created_at'], reverse=True)
         
         return jsonify({
@@ -230,7 +214,6 @@ def get_tv_reviews(series_id):
 @reviews_bp.route('/tv/<int:series_id>', methods=['POST'])
 @login_required
 def create_tv_review(series_id):
-    """Создание нового отзыва для сериала"""
     data = request.get_json()
     rating = data.get('rating')
     content = data.get('content', '')
@@ -238,7 +221,6 @@ def create_tv_review(series_id):
     if not rating or not isinstance(rating, (int, float)) or rating < 0 or rating > 10:
         return jsonify({'error': 'Оценка должна быть числом от 0 до 10'}), 400
     
-    # Проверяем, оставлял ли пользователь уже отзыв на этот сериал
     existing_review = Review.query.filter_by(series_id=series_id, user_id=current_user.id).first()
     if existing_review:
         return jsonify({'error': 'Вы уже оставляли отзыв на этот сериал. Вы можете его отредактировать.'}), 400

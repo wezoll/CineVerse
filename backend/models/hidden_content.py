@@ -5,13 +5,12 @@ class HiddenContent(db.Model):
     __tablename__ = 'hidden_content'
     
     id = db.Column(db.Integer, primary_key=True)
-    item_type = db.Column(db.String(50), nullable=False)  # 'movie' или 'tv'
+    item_type = db.Column(db.String(50), nullable=False)
     item_id = db.Column(db.Integer, nullable=False)
     reason = db.Column(db.Text, nullable=True)
     hidden_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Уникальное ограничение, чтобы один и тот же элемент не мог быть скрыт дважды
     __table_args__ = (
         db.UniqueConstraint('item_type', 'item_id', name='unique_hidden_content'),
     )

@@ -9,7 +9,6 @@ const FaqManagement = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Состояния для модального окна
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [selectedFaq, setSelectedFaq] = useState(null);
@@ -95,7 +94,6 @@ const FaqManagement = () => {
         setSuccessMessage("FAQ успешно обновлен");
       }
 
-      // Закрываем модальное окно через задержку
       setTimeout(() => {
         setShowModal(false);
         setSuccessMessage("");

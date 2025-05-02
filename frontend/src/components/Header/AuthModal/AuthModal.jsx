@@ -222,7 +222,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
     }
   };
 
-  // Переключение между формами
   const switchToLogin = (e) => {
     if (e) e.preventDefault();
     setShowSignup(false);
@@ -252,7 +251,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
         <button className="modal-close" onClick={onClose}>
           ×
         </button>
-        {/* Форма входа */}
         {!showSignup && !showForgotPassword && !showPasswordReset && (
           <div className="auth-form login-form">
             <h2 className="form-title">Вход в аккаунт</h2>
@@ -310,7 +308,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
               </div>
             </div>
 
-            {/* Уведомления внизу формы */}
             {(message || error) && (
               <div className="notification-container">
                 {error && <div className="error-message">{error}</div>}
@@ -320,7 +317,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
           </div>
         )}
 
-        {/* Форма регистрации */}
         {showSignup && (
           <div className="auth-form signup-form">
             <h2 className="form-title">Создать аккаунт</h2>
@@ -400,7 +396,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
               </a>
             </div>
 
-            {/* Уведомления внизу формы */}
             {(message || error) && (
               <div className="notification-container">
                 {error && <div className="error-message">{error}</div>}
@@ -410,7 +405,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
           </div>
         )}
 
-        {/* Форма запроса сброса пароля */}
         {showForgotPassword && (
           <div className="auth-form forgot-password-form">
             <h2 className="form-title">Восстановление пароля</h2>
@@ -448,7 +442,6 @@ const AuthModal = ({ onAuthSuccess, onClose }) => {
           </div>
         )}
 
-        {/* Форма сброса пароля */}
         {showPasswordReset && (
           <div className="auth-form reset-password-form">
             <h2 className="form-title">Сброс пароля</h2>

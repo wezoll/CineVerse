@@ -16,7 +16,6 @@ export const tvService = {
 
   getTVDetails: async (tvId) => {
     try {
-      // Добавляем параметр для запроса расширенных данных
       const response = await fetch(`${API_URL}/${tvId}?extended=true`);
       if (!response.ok) {
         throw new Error("Не удалось получить детали сериала");
@@ -28,7 +27,6 @@ export const tvService = {
     }
   },
 
-  // Метод для получения трейлеров
   getTVTrailers: async (tvId) => {
     try {
       const response = await fetch(`${API_URL}/${tvId}/videos`);
@@ -42,7 +40,6 @@ export const tvService = {
     }
   },
 
-  // Метод для получения изображений сериала
   getTVImages: async (tvId) => {
     try {
       const response = await fetch(`${API_URL}/${tvId}/images`);
@@ -56,7 +53,6 @@ export const tvService = {
     }
   },
 
-  // Метод для получения внешних ссылок сериала
   getTVExternalIds: async (tvId) => {
     try {
       const response = await fetch(`${API_URL}/${tvId}/external_ids`);

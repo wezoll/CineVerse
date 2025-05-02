@@ -18,12 +18,9 @@ const AdminPanel = () => {
       try {
         setIsLoading(true);
         setError("");
-        console.log("Запрашиваем проверку роли в админке...");
         const { role } = await adminService.checkRole();
-        console.log("Полученная роль в админке:", role);
         setRole(role);
       } catch (err) {
-        console.error("Ошибка при проверке роли:", err);
         setError(
           err.message === "Failed to fetch"
             ? "Не удалось подключиться к серверу. Пожалуйста, проверьте подключение к интернету и попробуйте снова."

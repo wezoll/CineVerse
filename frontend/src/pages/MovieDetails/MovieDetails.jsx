@@ -25,7 +25,6 @@ const MovieDetails = () => {
         const data = await movieService.getMovieDetails(id);
         setMovie(data);
 
-        // Поиск трейлера
         if (data.videos && data.videos.results) {
           const trailer = data.videos.results.find(
             (video) => video.type === "Trailer" && video.site === "YouTube"
@@ -35,7 +34,6 @@ const MovieDetails = () => {
           }
         }
 
-        // Если images не пришли в расширенных данных, загружаем отдельно
         if (
           !data.images ||
           !data.images.backdrops ||
@@ -51,7 +49,6 @@ const MovieDetails = () => {
           setMovieImages(data.images);
         }
 
-        // Загружаем внешние ссылки
         try {
           const externalIdsData = await movieService.getMovieExternalIds(id);
           setExternalIds(externalIdsData);
@@ -88,18 +85,14 @@ const MovieDetails = () => {
         person.job === "Story"
     ) || [];
 
-  // Используем либо изображения из основных данных фильма, либо отдельно загруженные
   const backdrops = movieImages.backdrops || [];
 
-  // Фильтруем актеров, оставляя только тех, у кого есть фото
   const castWithPhotos =
     movie.credits?.cast?.filter((actor) => actor.profile_path) || [];
 
-  // Фильтруем похожие фильмы, оставляя только те, у которых есть постер
   const similarMoviesWithPosters =
     movie.similar?.results?.filter((similar) => similar.poster_path) || [];
 
-  // Форматирование числа оценок
   const formatVoteCount = (count) => {
     if (count >= 1000) {
       return `${(count / 1000).toFixed(1)}K оценок`;
@@ -111,7 +104,6 @@ const MovieDetails = () => {
     <>
       <Header />
       <div className="cineverse-movie-details">
-        {/* Фоновое изображение с градиентом */}
         <div
           className="cineverse-movie-backdrop"
           style={{
@@ -193,7 +185,6 @@ const MovieDetails = () => {
                   ))}
               </div>
 
-              {/* Кнопки действий */}
               <div className="cineverse-movie-actions">
                 {trailerKey ? (
                   <button
@@ -214,7 +205,6 @@ const MovieDetails = () => {
             </div>
           </div>
 
-          {/* Вкладки */}
           <div className="cineverse-movie-tabs">
             <div className="cineverse-tabs-header">
               <button
@@ -257,7 +247,6 @@ const MovieDetails = () => {
             </div>
 
             <div className="cineverse-tabs-content">
-              {/* О фильме */}
               {activeTab === "about" && (
                 <div className="cineverse-movie-about">
                   <div className="cineverse-movie-description">
@@ -316,12 +305,10 @@ const MovieDetails = () => {
                     )}
                   </div>
 
-                  {/* Добавляем компонент внешних ссылок */}
                   <ExternalLinks externalIds={externalIds} type="movie" />
                 </div>
               )}
 
-              {/* Трейлер */}
               {activeTab === "trailer" && trailerKey && (
                 <div className="cineverse-movie-trailer">
                   <iframe
@@ -336,7 +323,6 @@ const MovieDetails = () => {
                 </div>
               )}
 
-              {/* Кадры из фильма */}
               {activeTab === "frames" && (
                 <div className="cineverse-movie-frames">
                   <div className="cineverse-frames-grid">
@@ -358,7 +344,6 @@ const MovieDetails = () => {
                 </div>
               )}
 
-              {/* Актеры (только с фото) */}
               {activeTab === "cast" && (
                 <div className="cineverse-movie-cast">
                   {castWithPhotos.length > 0 ? (
@@ -391,10 +376,8 @@ const MovieDetails = () => {
             </div>
           </div>
 
-          {/* Отзывы */}
           <Reviews movieId={id} />
 
-          {/* Похожие фильмы (только с постерами) */}
           {similarMoviesWithPosters.length > 0 && (
             <div className="cineverse-section">
               <h2 className="cineverse-section-title">

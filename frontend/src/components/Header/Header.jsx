@@ -61,7 +61,6 @@ const Header = () => {
 
     window.addEventListener("scroll", handleScroll);
 
-    // Закрытие меню пользователя при клике вне его
     const handleClickOutside = (event) => {
       if (
         showUserMenu &&
@@ -107,7 +106,6 @@ const Header = () => {
   }, [isModalOpen, isSearchOpen]);
 
   const scrollToSection = (sectionId) => {
-    // If not on homepage, navigate to homepage first
     if (location.pathname !== "/") {
       window.location.href = `/#${sectionId}`;
       return;

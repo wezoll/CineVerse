@@ -11,15 +11,14 @@ const MovieCategory = () => {
   const [error, setError] = useState(null);
   const sliderRef = useRef(null);
 
-  // Карта соответствия для идентификаторов жанров TMDB
   const genreIds = {
-    action: 28, // Боевик
-    comedy: 35, // Комедия
-    drama: 18, // Драма
-    fantasy: 14, // Фэнтези
-    horror: 27, // Ужасы
-    mystery: 9648, // Детектив
-    romance: 10749, // Мелодрама
+    action: 28,
+    comedy: 35,
+    drama: 18,
+    fantasy: 14,
+    horror: 27,
+    mystery: 9648,
+    romance: 10749,
   };
 
   const categoryMap = {
@@ -32,14 +31,12 @@ const MovieCategory = () => {
     romance: "Мелодрама",
   };
 
-  // Функция для загрузки фильмов по жанру
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       try {
         setLoading(true);
         const genreId = genreIds[selectedCategory];
 
-        // Добавим конечную точку API для получения фильмов по жанру
         const response = await fetch(
           `/api/movies/discover?genre=${genreId}&page=1`
         );

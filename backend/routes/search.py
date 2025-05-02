@@ -20,7 +20,6 @@ def combined_search():
     if not query:
         return jsonify({'results': [], 'total_pages': 0})
     
-    # Параметры для запросов к TMDB API
     params = {
         'api_key': API_KEY,
         'language': LANGUAGE,
@@ -29,22 +28,18 @@ def combined_search():
         'include_adult': False
     }
     
-    # Делаем запросы параллельно
     movies_url = f"{BASE_URL}/search/movie"
     tv_url = f"{BASE_URL}/search/tv"
     
-    # Выполнение запросов
     movies_response = requests.get(movies_url, params=params)
     tv_response = requests.get(tv_url, params=params)
     
     movies_data = movies_response.json()
     tv_data = tv_response.json()
     
-    # Получаем список скрытого контента
     hidden_content = HiddenContent.query.all()
     hidden_items = {(item.item_type, item.item_id) for item in hidden_content}
     
-    # Добавляем тип медиа к каждому результату и фильтруем скрытый контент
     filtered_movies = []
     for item in movies_data.get('results', []):
         item['media_type'] = 'movie'
@@ -54,7 +49,6 @@ def combined_search():
     filtered_tv = []
     for item in tv_data.get('results', []):
         item['media_type'] = 'series'
-        # Переименовываем поля для совместимости с интерфейсом фильмов
         if 'name' in item:
             item['title'] = item['name']
         if 'first_air_date' in item:
@@ -62,13 +56,10 @@ def combined_search():
         if ('tv', item['id']) not in hidden_items:
             filtered_tv.append(item)
     
-    # Объединяем отфильтрованные результаты
     combined_results = filtered_movies + filtered_tv
     
-    # Сортируем по популярности (если доступно) или по рейтингу
     combined_results.sort(key=lambda x: (x.get('popularity', 0) or 0), reverse=True)
     
-    # Расчет общего количества страниц
     total_pages = max(movies_data.get('total_pages', 0), tv_data.get('total_pages', 0))
     
     return jsonify({

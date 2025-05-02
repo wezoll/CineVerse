@@ -24,11 +24,9 @@ def get_popular_tv_shows():
     response = requests.get(url, params=params)
     data = response.json()
     
-    # Получаем список скрытых сериалов
     hidden_shows = HiddenContent.query.filter_by(item_type='tv').all()
     hidden_show_ids = {item.item_id for item in hidden_shows}
     
-    # Фильтруем скрытые сериалы из результатов
     if 'results' in data:
         data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
     
@@ -36,7 +34,6 @@ def get_popular_tv_shows():
 
 @tv_bp.route('/<int:tv_id>', methods=['GET'])
 def get_tv_details(tv_id):
-    # Проверяем, не скрыт ли сериал
     hidden_show = HiddenContent.query.filter_by(item_type='tv', item_id=tv_id).first()
     if hidden_show:
         return jsonify({'error': 'Сериал скрыт'}), 404
@@ -111,11 +108,9 @@ def search_tv_shows():
     response = requests.get(url, params=params)
     data = response.json()
     
-    # Получаем список скрытых сериалов
     hidden_shows = HiddenContent.query.filter_by(item_type='tv').all()
     hidden_show_ids = {item.item_id for item in hidden_shows}
     
-    # Фильтруем скрытые сериалы из результатов поиска
     if 'results' in data:
         data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
     
@@ -141,11 +136,9 @@ def discover_tv_shows():
     response = requests.get(url, params=params)
     data = response.json()
     
-    # Получаем список скрытых сериалов
     hidden_shows = HiddenContent.query.filter_by(item_type='tv').all()
     hidden_show_ids = {item.item_id for item in hidden_shows}
     
-    # Фильтруем скрытые сериалы из результатов
     if 'results' in data:
         data['results'] = [show for show in data['results'] if show['id'] not in hidden_show_ids]
     

@@ -16,7 +16,6 @@ export const movieService = {
 
   getMovieDetails: async (movieId) => {
     try {
-      // Добавляем параметр для запроса расширенных данных
       const response = await fetch(`${API_URL}/${movieId}?extended=true`);
       if (!response.ok) {
         throw new Error("Не удалось получить детали фильма");
@@ -28,7 +27,6 @@ export const movieService = {
     }
   },
 
-  // Новый метод специально для получения трейлеров
   getMovieTrailers: async (movieId) => {
     try {
       const response = await fetch(`${API_URL}/${movieId}/videos`);
@@ -42,7 +40,6 @@ export const movieService = {
     }
   },
 
-  // Новый метод для получения изображений фильма
   getMovieImages: async (movieId) => {
     try {
       const response = await fetch(`${API_URL}/${movieId}/images`);
@@ -56,7 +53,6 @@ export const movieService = {
     }
   },
 
-  // Новый метод для получения фильмов по жанру
   discoverMovies: async (genreId, page = 1) => {
     try {
       const response = await fetch(
@@ -72,7 +68,6 @@ export const movieService = {
     }
   },
 
-  // Новый метод для получения внешних ссылок фильма
   getMovieExternalIds: async (movieId) => {
     try {
       const response = await fetch(`${API_URL}/${movieId}/external_ids`);

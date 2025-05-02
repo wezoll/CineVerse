@@ -1,7 +1,6 @@
 const API_URL = "http://localhost:5000";
 
 export const reviewService = {
-  // Получение отзывов для фильма
   getMovieReviews: async (movieId) => {
     try {
       const response = await fetch(`${API_URL}/api/reviews/movie/${movieId}`, {
@@ -14,7 +13,6 @@ export const reviewService = {
     }
   },
 
-  // Создание отзыва
   createReview: async (movieId, reviewData) => {
     try {
       const response = await fetch(`${API_URL}/api/reviews/movie/${movieId}`, {
@@ -30,7 +28,6 @@ export const reviewService = {
     }
   },
 
-  // Обновление отзыва
   updateReview: async (reviewId, reviewData) => {
     try {
       const response = await fetch(`${API_URL}/api/reviews/${reviewId}`, {
@@ -46,7 +43,6 @@ export const reviewService = {
     }
   },
 
-  // Удаление отзыва
   deleteReview: async (reviewId) => {
     try {
       const response = await fetch(`${API_URL}/api/reviews/${reviewId}`, {
@@ -60,7 +56,6 @@ export const reviewService = {
     }
   },
 
-  // Получение отзывов пользователя
   getUserReviews: async () => {
     try {
       const response = await fetch(`${API_URL}/api/reviews/user`, {
@@ -85,7 +80,6 @@ export const reviewService = {
     }
   },
 
-  // Создание отзыва к сериалу
   createTVReview: async (seriesId, reviewData) => {
     try {
       const response = await fetch(`${API_URL}/api/reviews/tv/${seriesId}`, {

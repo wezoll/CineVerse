@@ -16,12 +16,9 @@ const PasswordModal = ({ onClose, onSuccess }) => {
     confirm_password: "",
   });
 
-  // Эффект для блокировки прокрутки при открытии модального окна
   useEffect(() => {
-    // Блокируем прокрутку
     document.body.style.overflow = "hidden";
 
-    // Возвращаем прокрутку при закрытии модального окна
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -36,12 +33,11 @@ const PasswordModal = ({ onClose, onSuccess }) => {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    setModalError(""); // Используем локальное состояние
-    setModalMessage(""); // Используем локальное состояние
+    setModalError("");
+    setModalMessage("");
 
-    // Проверка совпадения паролей
     if (passwordData.new_password !== passwordData.confirm_password) {
-      setModalError("Новый пароль и подтверждение пароля не совпадают"); // Используем локальное состояние
+      setModalError("Новый пароль и подтверждение пароля не совпадают");
       return;
     }
 
@@ -62,20 +58,19 @@ const PasswordModal = ({ onClose, onSuccess }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        setModalError(data.error || "Ошибка при смене пароля"); // Используем локальное состояние
+        setModalError(data.error || "Ошибка при смене пароля");
         return;
       }
 
-      setModalMessage(data.message || "Пароль успешно изменен"); // Используем локальное состояние
+      setModalMessage(data.message || "Пароль успешно изменен");
 
-      // Оповещаем родительский компонент об успешной смене пароля
       if (onSuccess) {
         setTimeout(() => {
           onSuccess();
         }, 1500);
       }
     } catch (err) {
-      setModalError("Ошибка соединения с сервером"); // Используем локальное состояние
+      setModalError("Ошибка соединения с сервером");
       console.error("Ошибка:", err);
     }
   };
@@ -169,7 +164,6 @@ const PasswordModal = ({ onClose, onSuccess }) => {
             </div>
           </form>
 
-          {/* Уведомления - используем локальные состояния */}
           {(modalMessage || modalError) && (
             <div className="notification-container">
               {modalError && <div className="error-message">{modalError}</div>}

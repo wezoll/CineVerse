@@ -3,7 +3,6 @@ import { API_URL } from "../config";
 const ADMIN_API_URL = `${API_URL}/api/admin`;
 
 export const adminService = {
-  // Проверка роли пользователя
   checkRole: async () => {
     try {
       const response = await fetch(`${ADMIN_API_URL}/check-role`, {
@@ -25,7 +24,6 @@ export const adminService = {
     }
   },
 
-  // Управление пользователями
   getUsers: async () => {
     try {
       const response = await fetch(`${ADMIN_API_URL}/users`, {
@@ -72,7 +70,6 @@ export const adminService = {
     }
   },
 
-  // Управление FAQ
   getAllFaqs: async () => {
     try {
       const response = await fetch(`${ADMIN_API_URL}/faqs`, {
@@ -162,7 +159,6 @@ export const adminService = {
     }
   },
 
-  // Управление отзывами
   getAllReviews: async () => {
     try {
       const response = await fetch(`${ADMIN_API_URL}/reviews`, {
@@ -206,7 +202,6 @@ export const adminService = {
     }
   },
 
-  // Управление скрытым контентом
   getHiddenContent: async () => {
     try {
       const response = await fetch(`${ADMIN_API_URL}/hidden-content`, {
@@ -279,7 +274,6 @@ export const adminService = {
     }
   },
 
-  // Получение статистики
   getStatistics: async () => {
     try {
       const response = await fetch(`${ADMIN_API_URL}/statistics`, {

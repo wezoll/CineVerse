@@ -3,9 +3,6 @@ import { favoriteService } from "../../services/favoriteService";
 import Notification from "../Notification/Notification";
 import "./FavoriteButton.css";
 
-/**
- * Компонент кнопки добавления/удаления из избранного
- */
 const FavoriteButton = ({ itemId, itemType, onToggle, className = "" }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState(null);
@@ -14,7 +11,6 @@ const FavoriteButton = ({ itemId, itemType, onToggle, className = "" }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
-  // Проверяем при загрузке, есть ли элемент в избранном
   useEffect(() => {
     const checkIfFavorite = async () => {
       try {
@@ -22,7 +18,6 @@ const FavoriteButton = ({ itemId, itemType, onToggle, className = "" }) => {
         setIsFavorite(data.is_favorite);
         setFavoriteId(data.favorite_id);
       } catch (error) {
-        // Если ошибка 401 или 403, значит пользователь не авторизован
         if (
           error.message &&
           (error.message.includes("401") || error.message.includes("403"))
@@ -48,30 +43,25 @@ const FavoriteButton = ({ itemId, itemType, onToggle, className = "" }) => {
     }
 
     try {
-      // Оптимистичное обновление UI без показа загрузки
       const wasInFavorites = isFavorite;
       setIsFavorite(!isFavorite);
 
       if (wasInFavorites) {
-        // Удаляем из избранного
         await favoriteService.removeFromFavorites(favoriteId);
         setFavoriteId(null);
         setNotificationMessage("Удалено из избранного");
         setShowNotification(true);
       } else {
-        // Добавляем в избранное
         const response = await favoriteService.addToFavorites(itemId, itemType);
         setFavoriteId(response.favorite.id);
         setNotificationMessage("Добавлено в избранное");
         setShowNotification(true);
       }
 
-      // Вызываем колбэк, если он передан
       if (onToggle) {
         onToggle(!wasInFavorites);
       }
     } catch (error) {
-      // В случае ошибки возвращаем предыдущее состояние
       setIsFavorite(isFavorite);
 
       if (

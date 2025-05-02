@@ -9,7 +9,6 @@ favorites_bp = Blueprint('favorites', __name__)
 @favorites_bp.route('/api/favorites', methods=['GET'])
 @login_required
 def get_favorites():
-    """Получение списка избранных элементов пользователя"""
     try:
         favorites = Favorite.query.filter_by(user_id=current_user.id).all()
         return jsonify({
@@ -25,18 +24,15 @@ def get_favorites():
 @favorites_bp.route('/api/favorites', methods=['POST'])
 @login_required
 def add_favorite():
-    """Добавление элемента в избранное"""
     try:
         data = request.get_json()
         
-        # Проверка обязательных полей
         if not data or 'item_id' not in data or 'item_type' not in data:
             return jsonify({
                 'success': False,
                 'error': 'Не указаны обязательные поля (item_id, item_type)'
             }), 400
         
-        # Проверка существования элемента в избранном
         existing_favorite = Favorite.query.filter_by(
             user_id=current_user.id,
             item_id=data['item_id'],
@@ -49,7 +45,6 @@ def add_favorite():
                 'error': 'Этот элемент уже в избранном'
             }), 400
         
-        # Создание нового элемента избранного
         new_favorite = Favorite(
             user_id=current_user.id,
             item_id=data['item_id'],
@@ -74,7 +69,6 @@ def add_favorite():
 @favorites_bp.route('/api/favorites/<int:favorite_id>', methods=['DELETE'])
 @login_required
 def delete_favorite(favorite_id):
-    """Удаление элемента из избранного"""
     try:
         favorite = Favorite.query.filter_by(id=favorite_id, user_id=current_user.id).first()
         
@@ -101,18 +95,15 @@ def delete_favorite(favorite_id):
 @favorites_bp.route('/api/favorites/check', methods=['POST'])
 @login_required
 def check_favorite():
-    """Проверка, находится ли элемент в избранном"""
     try:
         data = request.get_json()
         
-        # Проверка обязательных полей
         if not data or 'item_id' not in data or 'item_type' not in data:
             return jsonify({
                 'success': False,
                 'error': 'Не указаны обязательные поля (item_id, item_type)'
             }), 400
         
-        # Проверка существования элемента в избранном
         favorite = Favorite.query.filter_by(
             user_id=current_user.id,
             item_id=data['item_id'],

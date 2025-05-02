@@ -1,9 +1,6 @@
 const API_URL = "http://localhost:5000/api/favorites";
 const PROFILE_API_URL = "http://localhost:5000/profile";
 
-/**
- * Сервис для работы с избранными фильмами/сериалами
- */
 export const favoriteService = {
   /**
    * Получить список избранного
@@ -11,7 +8,6 @@ export const favoriteService = {
    */
   async getFavorites() {
     try {
-      // Используем URL из профиля, так как там уже есть проверка авторизации
       const response = await fetch(`${PROFILE_API_URL}/favorites`, {
         method: "GET",
         credentials: "include",
@@ -35,7 +31,7 @@ export const favoriteService = {
   /**
    * Добавить элемент в избранное
    * @param {number} itemId - ID элемента
-   * @param {string} itemType - Тип элемента ('movie', 'tv', 'person')
+   * @param {string} itemType - Тип элемента
    * @returns {Promise<Object>} - Результат операции
    */
   async addToFavorites(itemId, itemType) {
@@ -64,9 +60,8 @@ export const favoriteService = {
   },
 
   /**
-   * Удалить элемент из избранного
-   * @param {number} favoriteId - ID записи в избранном
-   * @returns {Promise<Object>} - Результат операции
+   * @param {number} favoriteId
+   * @returns {Promise<Object>}
    */
   async removeFromFavorites(favoriteId) {
     try {
@@ -90,10 +85,9 @@ export const favoriteService = {
   },
 
   /**
-   * Проверить, находится ли элемент в избранном
-   * @param {number} itemId - ID элемента
-   * @param {string} itemType - Тип элемента ('movie', 'tv', 'person')
-   * @returns {Promise<{is_favorite: boolean, favorite_id: number|null}>} - Результат проверки
+   * @param {number} itemId
+   * @param {string} itemType
+   * @returns {Promise<{is_favorite: boolean, favorite_id: number|null}>}
    */
   async checkFavorite(itemId, itemType) {
     try {

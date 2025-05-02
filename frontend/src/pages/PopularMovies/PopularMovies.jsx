@@ -12,24 +12,21 @@ const PopularMovies = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const moviesPerPage = 24;
-  const maxPages = 50; // Ограничиваем количество страниц до 50
+  const maxPages = 50;
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setLoading(true);
-        // Запрашиваем две страницы, чтобы получить 24 фильма (по 20 на странице)
         const page1 = await movieService.getPopularMovies(currentPage);
         const page2 = await movieService.getPopularMovies(currentPage + 1);
 
-        // Объединяем результаты и берем первые 24 фильма
         const combinedResults = [...page1.results, ...page2.results].slice(
           0,
           moviesPerPage
         );
         setMovies(combinedResults);
 
-        // Ограничиваем количество страниц до maxPages
         setTotalPages(
           Math.min(Math.ceil(page1.total_results / moviesPerPage), maxPages)
         );

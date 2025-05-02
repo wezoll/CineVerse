@@ -1,19 +1,15 @@
-// contexts/AuthContext.js
 import React, { createContext, useState, useContext, useEffect } from "react";
 
-// Создаем контекст аутентификации
 const AuthContext = createContext(null);
 
-// Базовый URL API (измените на ваш)
 const API_URL = "http://localhost:5000";
 
-// Вспомогательная функция для выполнения запросов
 const fetchApi = async (endpoint, options = {}) => {
   const defaultOptions = {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include", // Важно для сохранения сессионных cookie
+    credentials: "include",
   };
 
   const response = await fetch(`${API_URL}${endpoint}`, {
@@ -38,12 +34,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Проверка авторизации при загрузке
   useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  // Проверка текущей сессии
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
@@ -65,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Регистрация пользователя
   const register = async (userData) => {
     try {
       setLoading(true);
@@ -84,7 +77,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Вход пользователя
   const login = async (credentials) => {
     try {
       setLoading(true);
@@ -103,7 +95,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Выход пользователя
   const logout = async () => {
     try {
       setLoading(true);
@@ -120,7 +111,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Запрос на сброс пароля
   const forgotPassword = async (email) => {
     try {
       setLoading(true);
@@ -138,7 +128,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Сброс пароля
   const resetPassword = async (resetData) => {
     try {
       setLoading(true);
@@ -157,16 +146,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Проверка, авторизован ли пользователь
   const isAuthenticated = !!currentUser;
 
-  // Получение полного имени пользователя
   const getFullName = () => {
     if (!currentUser) return "";
     return `${currentUser.first_name} ${currentUser.last_name}`;
   };
 
-  // Значение, которое будет доступно через контекст
   const value = {
     currentUser,
     loading,
@@ -184,7 +170,6 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Хук для использования контекста аутентификации
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === null) {

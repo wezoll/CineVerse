@@ -9,7 +9,6 @@ profile_bp = Blueprint('profile', __name__)
 @profile_bp.route('/info', methods=['GET'])
 @login_required
 def get_profile_info():
-    """Get user profile information"""
     return jsonify({
         'user': {
             'id': current_user.id,
@@ -24,7 +23,6 @@ def get_profile_info():
 @profile_bp.route('/update', methods=['PUT'])
 @login_required
 def update_profile():
-    """Update user profile information"""
     data = request.get_json()
     first_name = data.get('first_name')
     last_name = data.get('last_name')
@@ -55,7 +53,6 @@ def update_profile():
 @profile_bp.route('/change-password', methods=['PUT'])
 @login_required
 def change_password():
-    """Change user password"""
     data = request.get_json()
     current_password = data.get('current_password')
     new_password = data.get('new_password')
@@ -87,7 +84,6 @@ def change_password():
 @profile_bp.route('/favorites', methods=['GET'])
 @login_required
 def get_user_favorites():
-    """Получение списка избранных элементов пользователя для профиля"""
     try:
         favorites = Favorite.query.filter_by(user_id=current_user.id).all()
         return jsonify({

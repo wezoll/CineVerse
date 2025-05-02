@@ -27,7 +27,6 @@
   position: relative;
 }
 
-/* Улучшенные стили для переключателя день/неделя с анимацией */
 .time-window-toggle {
   display: flex;
   border-radius: 20px;
@@ -39,7 +38,6 @@
   width: 285px;
 }
 
-/* Элемент фона-индикатора для активной кнопки */
 .time-window-toggle::before {
   content: "";
   position: absolute;
@@ -53,7 +51,6 @@
   z-index: 0;
 }
 
-/* Когда активна правая кнопка, двигаем индикатор */
 .time-window-toggle:has(.time-window-btn:nth-child(2).active)::before {
   transform: translateX(100%);
 }
@@ -294,7 +291,6 @@
   background-color: #0066ff;
 }
 
-/* Анимация скелетона загрузки */
 .skeleton-poster {
   background-color: #1a1a1a;
 }
@@ -334,7 +330,6 @@
   }
 }
 
-/* Анимация появления контента */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -350,7 +345,6 @@
   }
 }
 
-/* Состояния загрузки и ошибки */
 .Top10-error,
 .Top10-empty {
   color: #fff;
@@ -401,7 +395,6 @@
   }
 }
 
-/* Для браузеров, которые не поддерживают :has() селектор */
 @supports not (selector(:has(*))) {
   .time-window-btn.active {
     background-color: transparent;

@@ -1,7 +1,6 @@
 const API_URL = "/api/releases";
 
 export const releasesService = {
-  // Получение новинок (фильмы и сериалы марта-апреля 2025)
   getUpcomingMarchApril2025: async (page = 1, limit = 20) => {
     try {
       const response = await fetch(
@@ -17,7 +16,6 @@ export const releasesService = {
     }
   },
 
-  // Получение детальной информации о фильме
   getMovieDetails: async (movieId) => {
     try {
       const response = await fetch(`${API_URL}/movie/${movieId}`);
@@ -31,7 +29,6 @@ export const releasesService = {
     }
   },
 
-  // Получение детальной информации о сериале
   getTVDetails: async (tvId) => {
     try {
       const response = await fetch(`${API_URL}/tv/${tvId}`);
