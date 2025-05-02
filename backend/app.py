@@ -5,17 +5,17 @@ from flask_cors import CORS
 from datetime import timedelta
 
 
-from routes.auth_routes import auth_bp
-from routes.profile_routes import profile_bp
-from routes.faq_routes import faq_bp
-from routes.movies_routes import movies_bp
-from routes.reviews_routes import reviews_bp
-from routes.tv_routes import tv_bp
-from routes.search_routes import search_bp
-from routes.trending_routes import trending_bp
-from routes.releases_routes import releases_bp
-from routes.favorite_routes import favorites_bp
-from routes.admin_routes import admin_bp
+from routes.auth import auth_bp
+from routes.profile import profile_bp
+from routes.faq import faq_bp
+from routes.movies import movies_bp
+from routes.reviews import reviews_bp
+from routes.tv import tv_bp
+from routes.search import search_bp
+from routes.trending import trending_bp
+from routes.releases import releases_bp
+from routes.favorite import favorites_bp
+from routes.admin import admin_bp
 from models.user import User
 
 load_dotenv()
