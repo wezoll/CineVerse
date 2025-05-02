@@ -8,7 +8,7 @@ const FeedbackForm = () => {
     email: "",
     message: "",
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
@@ -33,14 +33,14 @@ const FeedbackForm = () => {
 
     try {
       const response = await fetch(TELEGRAM_API_URL, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           text: text,
-          parse_mode: 'HTML'
+          parse_mode: "HTML",
         }),
       });
 
@@ -51,7 +51,7 @@ const FeedbackForm = () => {
 
       return await response.json();
     } catch (error) {
-      console.error('Error sending message to Telegram:', error);
+      console.error("Error sending message to Telegram:", error);
       throw error;
     }
   };
@@ -64,18 +64,22 @@ const FeedbackForm = () => {
     try {
       console.log("Отправляемые данные:", formData);
       await sendToTelegram(formData);
-      
-      setSubmitStatus({ success: true, message: "Сообщение успешно отправлено!" });
-      
+
+      setSubmitStatus({
+        success: true,
+        message: "Сообщение успешно отправлено!",
+      });
+
       setFormData({
         name: "",
         email: "",
         message: "",
       });
     } catch (error) {
-      setSubmitStatus({ 
-        success: false, 
-        message: "Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте позже." 
+      setSubmitStatus({
+        success: false,
+        message:
+          "Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте позже.",
       });
     } finally {
       setIsSubmitting(false);
@@ -92,13 +96,17 @@ const FeedbackForm = () => {
           </h3>
 
           {submitStatus && (
-            <div className={`submit-status ${submitStatus.success ? 'success' : 'error'}`}>
+            <div
+              className={`submit-status ${
+                submitStatus.success ? "success" : "error"
+              }`}
+            >
               {submitStatus.message}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="feedback-form">
-            <div className="form-group">
+            <div className="form-group-feedback">
               <label htmlFor="name">Имя</label>
               <input
                 type="text"
@@ -111,7 +119,7 @@ const FeedbackForm = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group-feedback">
               <label htmlFor="email">Электронная почта</label>
               <input
                 type="email"
@@ -124,21 +132,21 @@ const FeedbackForm = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group-feedback">
               <label htmlFor="message">Сообщение</label>
               <textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="form-textarea"
+                className="form-textarea-feedback"
                 required
               />
             </div>
 
-            <button 
-              type="submit" 
-              className="submit-button" 
+            <button
+              type="submit"
+              className="submit-button"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Отправка..." : "Отправить"}
@@ -147,11 +155,7 @@ const FeedbackForm = () => {
         </div>
 
         <div className="feedback-logo-container">
-          <img
-            src="/images/feedback.svg"
-            alt=""
-            className="feedback-logo"
-          />
+          <img src="/images/feedback.svg" alt="" className="feedback-logo" />
         </div>
       </div>
     </div>

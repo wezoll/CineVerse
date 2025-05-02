@@ -39,18 +39,18 @@
   gap: 20px;
 }
 
-.form-group {
+.form-group-feedback {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.form-group label {
+.form-group-feedback label {
   font-size: 16px;
 }
 
 .form-input,
-.form-textarea {
+.form-textarea-feedback {
   width: 100%;
   padding: 12px 15px;
   border-radius: 4px;
@@ -63,6 +63,7 @@
 .form-textarea {
   min-height: 100px;
   resize: vertical;
+  background-color: #0c0c0c;
 }
 
 .submit-button {
