@@ -149,7 +149,7 @@ const ContentManagement = () => {
           </div>
         </div>
       ) : (
-        <div className="admin-hidden-content">
+        <div className="admin-hidden-content" style={{ marginTop: 15 }}>
           <h4>Скрытый контент</h4>
           {hiddenContent.length === 0 ? (
             <p>Нет скрытого контента</p>
