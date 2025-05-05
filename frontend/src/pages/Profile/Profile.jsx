@@ -239,9 +239,7 @@ const Profile = () => {
               <p>{user.email}</p>
               {user.role && user.role !== "user" && (
                 <span className="user-role-badge">
-                  {user.role === "super_admin"
-                    ? "Супер-админ"
-                    : "Администратор"}
+                  {user.role === "super_admin" ? "Владелец" : "Администратор"}
                 </span>
               )}
             </div>

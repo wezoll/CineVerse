@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { adminService } from "../../services/adminService";
+import ConfirmModal from "./ConfirmModal";
 
 const ContentManagement = () => {
   const [hiddenContent, setHiddenContent] = useState([]);
@@ -10,6 +11,11 @@ const ContentManagement = () => {
     item_type: "movie",
     item_id: "",
     reason: "",
+  });
+  const [confirmModal, setConfirmModal] = useState({
+    isOpen: false,
+    contentId: null,
+    contentInfo: "",
   });
 
   const fetchHiddenContent = async () => {
@@ -58,22 +64,25 @@ const ContentManagement = () => {
     }
   };
 
-  const handleUnhide = async (contentId) => {
-    if (
-      !window.confirm("Вы уверены, что хотите отменить скрытие этого контента?")
-    ) {
-      return;
-    }
+  const handleUnhideClick = (content) => {
+    setConfirmModal({
+      isOpen: true,
+      contentId: content.id,
+      contentInfo: `${
+        content.item_type === "movie" ? "Фильм" : "Сериал"
+      } (ID: ${content.item_id})`,
+    });
+  };
 
-    setError("");
-    setSuccessMessage("");
-
+  const handleUnhideConfirm = async () => {
     try {
-      await adminService.unhideContent(contentId);
+      setError("");
+      setSuccessMessage("");
+      await adminService.unhideContent(confirmModal.contentId);
       setSuccessMessage("Скрытие контента отменено");
+      setConfirmModal({ isOpen: false, contentId: null, contentInfo: "" });
       fetchHiddenContent();
     } catch (err) {
-      console.error("Ошибка при отмене скрытия контента:", err);
       setError(err.message || "Ошибка при отмене скрытия контента");
     }
   };
@@ -169,7 +178,7 @@ const ContentManagement = () => {
                     <td className="actions">
                       <button
                         className="admin-action-button success"
-                        onClick={() => handleUnhide(content.id)}
+                        onClick={() => handleUnhideClick(content)}
                       >
                         Отменить скрытие
                       </button>
@@ -181,6 +190,16 @@ const ContentManagement = () => {
           )}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() =>
+          setConfirmModal({ isOpen: false, contentId: null, contentInfo: "" })
+        }
+        onConfirm={handleUnhideConfirm}
+        title="Подтверждение отмены скрытия"
+        message={`Вы уверены, что хотите отменить скрытие для ${confirmModal.contentInfo}? Это действие нельзя отменить.`}
+      />
     </div>
   );
 };

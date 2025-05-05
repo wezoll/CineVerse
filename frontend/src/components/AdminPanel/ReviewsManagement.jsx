@@ -13,6 +13,8 @@ const ReviewsManagement = () => {
   const [itemDetails, setItemDetails] = useState({});
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [selectedItemType, setSelectedItemType] = useState(null);
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
     reviewId: null,
@@ -61,22 +63,25 @@ const ReviewsManagement = () => {
 
   const handleViewDetails = async (review) => {
     setSelectedReview(review);
+    const itemId = review.movie_id || review.series_id;
+    const itemType = review.movie_id ? "movie" : "tv";
+    setSelectedItemId(itemId);
+    setSelectedItemType(itemType);
+    console.log("Открыт отзыв:", review);
 
     try {
-      if (!itemDetails[`${review.item_type}-${review.item_id}`]) {
+      if (!itemDetails[`${itemType}-${itemId}`]) {
         let details;
-        if (review.item_type === "movie") {
-          details = await movieService.getMovieDetails(review.item_id);
-        } else if (review.item_type === "tv") {
-          details = await tvService.getTVDetails(review.item_id);
+        if (itemType === "movie") {
+          details = await movieService.getMovieDetails(itemId);
+        } else if (itemType === "tv") {
+          details = await tvService.getTVDetails(itemId);
         }
-
         setItemDetails((prev) => ({
           ...prev,
-          [`${review.item_type}-${review.item_id}`]: details,
+          [`${itemType}-${itemId}`]: details,
         }));
       }
-
       setShowDetailsModal(true);
     } catch (err) {
       console.error("Ошибка при получении информации о контенте:", err);
@@ -190,7 +195,7 @@ const ReviewsManagement = () => {
 
       {showDetailsModal && selectedReview && (
         <div className="admin-modal-overlay">
-          <div className="admin-modal">
+          <div className="admin-modal" style={{ minWidth: 600, maxWidth: 700 }}>
             <div className="admin-modal-header">
               <h4 className="admin-modal-title">Детали отзыва</h4>
               <button
@@ -202,69 +207,72 @@ const ReviewsManagement = () => {
             </div>
             <div className="admin-modal-body">
               <div className="review-detail-content">
-                <div className="review-user-info">
-                  <h4>Информация о пользователе</h4>
-                  <p>
-                    <strong>Имя:</strong>{" "}
-                    {selectedReview.user_name || "Пользователь"}
-                  </p>
-                  <p>
-                    <strong>Email:</strong>{" "}
-                    {selectedReview.user_email || "Не указан"}
-                  </p>
-                </div>
-
-                <div className="review-content-info">
-                  <h4>Информация об отзыве</h4>
-                  <p>
-                    <strong>Рейтинг:</strong> {selectedReview.rating}/10
-                  </p>
-                  <p>
-                    <strong>Отзыв:</strong>
-                  </p>
-                  <div className="review-full-content">
-                    {selectedReview.content || "Отзыв отсутствует"}
-                  </div>
-                  <p>
-                    <strong>Дата создания:</strong>{" "}
-                    {formatDate(selectedReview.created_at)}
-                  </p>
-                </div>
-
-                <div className="review-item-info">
-                  <h4>Информация о контенте</h4>
-                  {itemDetails[
-                    `${selectedReview.item_type}-${selectedReview.item_id}`
-                  ] ? (
-                    <div className="item-details">
-                      <p>
-                        <strong>Название:</strong>{" "}
-                        {selectedReview.item_type === "movie"
-                          ? itemDetails[
-                              `${selectedReview.item_type}-${selectedReview.item_id}`
-                            ].title
-                          : itemDetails[
-                              `${selectedReview.item_type}-${selectedReview.item_id}`
-                            ].name}
-                      </p>
-                      {itemDetails[
-                        `${selectedReview.item_type}-${selectedReview.item_id}`
-                      ].poster_path && (
-                        <div className="item-poster">
-                          <img
-                            src={`https://image.tmdb.org/t/p/w200${
-                              itemDetails[
-                                `${selectedReview.item_type}-${selectedReview.item_id}`
-                              ].poster_path
-                            }`}
-                            alt="Постер"
-                          />
-                        </div>
-                      )}
+                <div
+                  className="item-details"
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "20px",
+                  }}
+                >
+                  {itemDetails[`${selectedItemType}-${selectedItemId}`]
+                    ?.poster_path && (
+                    <div className="item-poster" style={{ minWidth: 140 }}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w200${
+                          itemDetails[`${selectedItemType}-${selectedItemId}`]
+                            .poster_path
+                        }`}
+                        alt="Постер"
+                        style={{
+                          borderRadius: 8,
+                          maxWidth: 140,
+                          height: "auto",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                        }}
+                      />
                     </div>
-                  ) : (
-                    <p>Загрузка информации о контенте...</p>
                   )}
+                  <div style={{ flex: "1 1 0" }}>
+                    <div style={{ marginBottom: 8 }}>
+                      <strong>Информация о пользователе</strong>
+                      <br />
+                      Имя:{" "}
+                      {selectedReview.user_name ||
+                        `${selectedReview.user_first_name || ""} ${
+                          selectedReview.user_last_name || ""
+                        }`.trim()}
+                      <br />
+                      Email: {selectedReview.user_email || "Не указан"}
+                    </div>
+                    <div style={{ marginBottom: 8 }}>
+                      <strong>Информация об отзыве</strong>
+                      <br />
+                      Рейтинг: {selectedReview.rating}/10
+                      <br />
+                      Отзыв:
+                      <br />
+                      <span style={{ whiteSpace: "pre-line" }}>
+                        {selectedReview.content || "Отзыв отсутствует"}
+                      </span>
+                      <br />
+                      Дата создания: {formatDate(selectedReview.created_at)}
+                    </div>
+                    <div>
+                      <strong>Информация о контенте</strong>
+                      <br />
+                      Название:{" "}
+                      {selectedItemType === "movie"
+                        ? itemDetails[`${selectedItemType}-${selectedItemId}`]
+                            .title
+                        : itemDetails[`${selectedItemType}-${selectedItemId}`]
+                            .name}
+                      <br />
+                      ID: {selectedItemId}
+                      <br />
+                      Тип: {selectedItemType === "movie" ? "Фильм" : "Сериал"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

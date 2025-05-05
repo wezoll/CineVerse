@@ -110,10 +110,15 @@ const UsersManagement = ({ userRole }) => {
                     >
                       <option value="user">Пользователь</option>
                       <option value="admin">Администратор</option>
-                      <option value="super_admin">Супер-администратор</option>
                     </select>
                   )}
-                  {userRole !== "super_admin" && user.role}
+                  {userRole !== "super_admin" && (
+                    <span>
+                      {user.role === "user" && "Пользователь"}
+                      {user.role === "admin" && "Администратор"}
+                      {user.role === "super_admin" && "Владелец"}
+                    </span>
+                  )}
                 </td>
                 <td className="actions">
                   <button
