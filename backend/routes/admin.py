@@ -30,7 +30,6 @@ def super_admin_required(f):
 @admin_bp.route('/check-role', methods=['GET'])
 @login_required
 def check_role():
-    """Проверка роли текущего пользователя"""
     if not current_user.is_authenticated:
         return jsonify({'role': None}), 200
     
@@ -143,7 +142,6 @@ def delete_faq(faq_id):
 @login_required
 @admin_required
 def get_all_reviews():
-    """Получение всех отзывов (с возможностью фильтрации)"""
     reviews = Review.query.order_by(Review.created_at.desc()).all()
     return jsonify([review.to_dict() for review in reviews]), 200
 
